@@ -7,7 +7,7 @@ function MyButton({ children, className }: MyButtonProps) {
   return (
     <button
       className={
-        "px-3 py-1 rounded-sm cursor-pointer bg-transparent duration-150 hover:bg-[#3758c5]" +
+        "px-3 py-1 rounded-sm cursor-pointer duration-150 hover:bg-[#3758c5]" +
         " " +
         className
       }

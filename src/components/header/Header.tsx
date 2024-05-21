@@ -1,16 +1,14 @@
 import { Link } from "react-router-dom";
 import MySearchIcon from "../UI/MyIcons/MySearchIcon";
 import MyButton from "../UI/MyButtons/MyButton";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import MyModal from "../UI/MyModal/MyModal";
-import { contextData } from "../context/logic";
 
 type HeaderProps = {
   options: boolean;
 };
 
 function Header({ options }: HeaderProps) {
-  const { filteredBySearchMovies } = useContext(contextData);
   const [modal, setModal] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
 
@@ -38,7 +36,7 @@ function Header({ options }: HeaderProps) {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <span onClick={() => filteredBySearchMovies(search)}>
+          <span>
             <MySearchIcon className="cursor-pointer" />
           </span>
         </div>
