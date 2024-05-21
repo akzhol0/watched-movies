@@ -6,6 +6,7 @@ import UnknownPage from "./components/unknown-page/UnknownPage";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import { ContextOverAll } from "./components/context/logic";
+import FilmPage from "./components/film-page/FilmPage";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<MainPage />}></Route>
+          <Route path="/:filmType/:title/:id" element={<FilmPage />}></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/register" element={<Register />}></Route>
           <Route path="*" element={<UnknownPage />}></Route>

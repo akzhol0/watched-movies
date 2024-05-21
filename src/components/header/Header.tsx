@@ -1,48 +1,57 @@
 import { Link } from "react-router-dom";
 import MySearchIcon from "../UI/MyIcons/MySearchIcon";
 import MyButton from "../UI/MyButtons/MyButton";
-import { useState } from "react";
-import MyModal from "../UI/MyModal/MyModal";
+import { useContext, useState } from "react";
+import MyModal from "../UI/MyModals/MyModal";
+import { contextData } from "../context/logic";
+import MyErrorModal from "../UI/MyModals/MyErrorModal";
+import BurgerMenuHeader from "./BurgerMenuHeader";
 
 type HeaderProps = {
   options: boolean;
 };
 
 function Header({ options }: HeaderProps) {
+  const { requestTitle, errorMessage, setSearchBar } = useContext(contextData);
   const [modal, setModal] = useState<boolean>(false);
-  const [search, setSearch] = useState<string>("");
+  const [searchBarInput, setSearchBarInput] = useState<string>("");
 
   return (
-    <div className="w-full h-[80px] flex justify-center bg-[#131313]">
+    <div className="w-full h-[80px] flex justify-center items-center bg-[#131313]">
+      <BurgerMenuHeader
+        setSearchBarInput={setSearchBarInput}
+        searchBarInput={searchBarInput}
+        setModal={setModal}
+      />
       <div
         className={
           options
-            ? "w-[90%] flex justify-between items-center text-[#e6e6e6]"
+            ? "w-[90%] flex justify-center lg:justify-between items-center text-[#e6e6e6]"
             : "w-[90%] flex justify-center items-center text-[#e6e6e6]"
         }
       >
-        <div>
-          <Link to="/">
-            <h1 className="text-3xl font-extrabold">
-              KINO<span className="text-[#3758c5]">MORE</span>
-            </h1>
-          </Link>
-        </div>
-        <div className={options ? "flex items-center gap-3" : "hidden"}>
+        <Link to="/">
+          <h1 className="text-3xl font-extrabold">
+            KINO<span className="text-[#3758c5]">MORE</span>
+          </h1>
+        </Link>
+        <div
+          className={options ? "hidden lg:flex items-center gap-3" : "hidden"}
+        >
           <input
             className="w-[400px] h-[45px] rounded-md ps-3 bg-[#1b1b1b] placeholder-[#4e4e4e] focus:outline-none focus:ring-1"
             type="text"
-            placeholder="Search..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            placeholder={`Search in ${requestTitle}s...`}
+            value={searchBarInput}
+            onChange={(e) => setSearchBarInput(e.target.value)}
           />
-          <span>
+          <span onClick={() => setSearchBar(searchBarInput)}>
             <MySearchIcon className="cursor-pointer" />
           </span>
         </div>
-        <div className={options ? "block" : "hidden"}>
+        <div className={options ? "hidden lg:block" : "hidden"}>
           <span onClick={() => setModal(true)}>
-            <MyButton>ADD MOVIE</MyButton>
+            <MyButton>ADD {requestTitle.toUpperCase()}</MyButton>
           </span>
           <Link to="login">
             <MyButton>LOG IN</MyButton>
@@ -50,6 +59,7 @@ function Header({ options }: HeaderProps) {
         </div>
       </div>
       <MyModal modal={modal} setModal={setModal} />
+      {errorMessage && <MyErrorModal />}
     </div>
   );
 }
