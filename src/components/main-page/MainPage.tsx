@@ -51,12 +51,12 @@ function MainPage() {
                     <CardMovie key={item.id} item={item} />
                   ))
               : shows
-              .filter((item) =>
-                item.title.toLowerCase().includes(searchBar)
-              )
-              .map((item: ShowsProps) => (
-                <CardShow key={item.id} item={item} />
-              ))}
+                  .filter((item) =>
+                    item.title.toLowerCase().includes(searchBar)
+                  )
+                  .map((item: ShowsProps) => (
+                    <CardShow key={item.id} item={item} />
+                  ))}
           </div>
         </section>
       </div>

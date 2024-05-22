@@ -1,19 +1,20 @@
 import { useParams } from "react-router-dom";
 import Header from "../header/Header";
-import { contextData } from "../context/logic";
 import { useContext, useEffect } from "react";
+import { contextData } from "../context/logic";
 
 function FilmPage() {
-  const { getInfoFilmPage } = useContext(contextData);
+  const {getInfoFilmPage, filmInfo} = useContext(contextData)
   const { title } = useParams();
 
   useEffect(() => {
-    getInfoFilmPage(title)
-  }, [])
+    getInfoFilmPage(title);
+  }, []);
 
+  console.log(filmInfo)
   return (
     <div className="min-h-[600px]">
-      <Header options={false} />
+      <Header options={false} />    
     </div>
   );
 }

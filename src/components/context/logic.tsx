@@ -1,5 +1,8 @@
 import React, { createContext, useEffect, useState } from "react";
-import { MoviesProps, ShowsProps } from "../../service/types";
+import {
+  MoviesProps,
+  ShowsProps,
+} from "../../service/types";
 import { moviesDatabase, showsDatabase } from "../../service/database";
 
 type ContextProps = {
@@ -15,6 +18,7 @@ type ContextProps = {
   searchBar: string;
   setSearchBar: (arg0: string) => void;
   getInfoFilmPage: (arg0: string | undefined) => void;
+  filmInfo: any[] | undefined;
 };
 export const contextData = createContext({} as ContextProps);
 
@@ -28,17 +32,19 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
   const [requestTitle, setRequestTitle] = useState<string>("movie");
   const [errorMessage, setErrorMessage] = useState<boolean>(false);
   const [searchBar, setSearchBar] = useState<string>("");
+  const [filmInfo, setFilmInfo] = useState<any[]>();
 
   useEffect(() => {
     setMovies(moviesDatabase);
     setShows(showsDatabase);
   }, []);
 
-  async function addFilm (
-    title: string | undefined,
-  ) {
-    const url =
-      `https://streaming-availability.p.rapidapi.com/shows/search/title?country=us&title=${title}`;
+  async function addFilm(title: string | undefined) {
+    if (title === undefined) {
+      setErrorMessage(true);
+      return;
+    }
+    const url = `https://streaming-availability.p.rapidapi.com/shows/search/title?country=us&title=${title}`;
     const options = {
       method: "GET",
       headers: {
@@ -50,35 +56,38 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
     try {
       const response = await fetch(url, options);
       const result = await response.json();
-      makingObjectFunction(result[0], requestTitle);
+      makingObjectForAddFilm(result[0], requestTitle);
     } catch (error) {
+      setErrorMessage(true);
       console.error(error);
     }
   }
 
-  async function getInfoFilmPage (
-    title: string | undefined,
-  ) {
-    const url =
-      `https://streaming-availability.p.rapidapi.com/shows/search/title?country=us&title=${title}`;
+  async function getInfoFilmPage(title: string | undefined) {
+    if (title === undefined) {
+      setErrorMessage(true);
+      return;
+    }
+    const url = `https://streaming-availability.p.rapidapi.com/shows/search/title?country=us&title=${title}&output_language=en`;
     const options = {
       method: "GET",
       headers: {
-        "x-rapidapi-key": "3d4873dbedmsh26c0c5fe6f0834cp163b55jsn6595affd0732",
-        "x-rapidapi-host": "streaming-availability.p.rapidapi.com",
+        "X-RapidAPI-Key": "af2505537dmsh2474d2c04c07223p1525f4jsne7cecc4f7ee4",
+        "X-RapidAPI-Host": "streaming-availability.p.rapidapi.com",
       },
     };
 
     try {
       const response = await fetch(url, options);
       const result = await response.json();
-      console.log(result[0])
+      setFilmInfo(result[0]);
     } catch (error) {
+      setErrorMessage(true);
       console.error(error);
     }
   }
 
-  const makingObjectFunction = (item: any, reqTitle: string) => {
+  const makingObjectForAddFilm = (item: any, reqTitle: string) => {
     if (item === undefined) {
       setErrorMessage(true);
       return;
@@ -134,6 +143,7 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
         searchBar,
         setSearchBar,
         getInfoFilmPage,
+        filmInfo,
       }}
     >
       {children}
