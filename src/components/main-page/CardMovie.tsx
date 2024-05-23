@@ -11,9 +11,6 @@ type CardProps = {
 function Card({ item }: CardProps) {
   const { deleteMovie } = useContext(contextData);
 
-  const spread = [...String(item.rating)];
-  const rating = spread.join(".");
-
   return (
     <div className="w-full h-[500px] relative flex flex-col overflow-hidden rounded-lg text-white">
       <span className="overflow-hidden">
@@ -23,13 +20,13 @@ function Card({ item }: CardProps) {
         />
       </span>
       <strong className="mt-4 cursor-pointer hover:underline">
-        <Link to={`/${item.showType}/${item.title}/${item.id}`}>{item.title}</Link>
+        <Link to={`/movie/${item.title}/${item.id}`}>{item.title}</Link>
       </strong>
       <small className="mt-2">
         {item?.releaseYear}, {item.showType}
       </small>
       <div className="px-2 cursor-default rounded-[6px] bg-blue-600 absolute top-3 left-3">
-        <p>{rating}</p>
+        <p>{[...String(item.rating)].join(".")}</p>
       </div>
       <div
         onClick={() => deleteMovie(Number(item.id))}

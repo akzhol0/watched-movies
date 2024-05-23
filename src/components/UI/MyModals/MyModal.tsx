@@ -9,7 +9,7 @@ type MyModalProps = {
 };
 
 function MyModal({ modal, setModal }: MyModalProps) {
-  const { addFilm, requestTitle } = useContext(contextData);
+  const { getInfo, requestTitle } = useContext(contextData);
   const [filmName, setMovieName] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
 
@@ -19,7 +19,7 @@ function MyModal({ modal, setModal }: MyModalProps) {
       return;
     }
 
-    addFilm(filmName);
+    getInfo(filmName, 'addFilm');
     setMovieName("");
     setModal(false);
   }

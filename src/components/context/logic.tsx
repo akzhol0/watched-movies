@@ -1,12 +1,9 @@
 import React, { createContext, useEffect, useState } from "react";
-import {
-  MoviesProps,
-  ShowsProps,
-} from "../../service/types";
+import { MoviesPageProps, MoviesProps, ShowsProps, ShowsPageProps } from "../../service/types";
 import { moviesDatabase, showsDatabase } from "../../service/database";
 
 type ContextProps = {
-  addFilm: (arg0: string | undefined) => void;
+  getInfo: (arg0: string | undefined, arg1: string) => void;
   movies: MoviesProps[];
   deleteMovie: (arg0: number) => void;
   shows: ShowsProps[];
@@ -17,8 +14,10 @@ type ContextProps = {
   setErrorMessage: (arg0: boolean) => void;
   searchBar: string;
   setSearchBar: (arg0: string) => void;
-  getInfoFilmPage: (arg0: string | undefined) => void;
-  filmInfo: any[] | undefined;
+  filmLoaded: boolean;
+  moviePageInfo: MoviesPageProps[];
+  showPageInfo: ShowsPageProps[];
+  setFilmLoaded: (arg0: boolean) => void;
 };
 export const contextData = createContext({} as ContextProps);
 
@@ -32,14 +31,17 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
   const [requestTitle, setRequestTitle] = useState<string>("movie");
   const [errorMessage, setErrorMessage] = useState<boolean>(false);
   const [searchBar, setSearchBar] = useState<string>("");
-  const [filmInfo, setFilmInfo] = useState<any[]>();
+  const [moviePageInfo, setMoviePageInfo] = useState<MoviesPageProps[]>([]);
+  const [showPageInfo, setMovieShowPageInfo] = useState<ShowsPageProps[]>([]);
+  const [filmLoaded, setFilmLoaded] = useState<boolean>(false);
 
   useEffect(() => {
     setMovies(moviesDatabase);
     setShows(showsDatabase);
   }, []);
 
-  async function addFilm(title: string | undefined) {
+  async function getInfo(title: string | undefined, option: string) {
+    setFilmLoaded(false);
     if (title === undefined) {
       setErrorMessage(true);
       return;
@@ -56,31 +58,15 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
     try {
       const response = await fetch(url, options);
       const result = await response.json();
-      makingObjectForAddFilm(result[0], requestTitle);
-    } catch (error) {
-      setErrorMessage(true);
-      console.error(error);
-    }
-  }
-
-  async function getInfoFilmPage(title: string | undefined) {
-    if (title === undefined) {
-      setErrorMessage(true);
-      return;
-    }
-    const url = `https://streaming-availability.p.rapidapi.com/shows/search/title?country=us&title=${title}&output_language=en`;
-    const options = {
-      method: "GET",
-      headers: {
-        "X-RapidAPI-Key": "af2505537dmsh2474d2c04c07223p1525f4jsne7cecc4f7ee4",
-        "X-RapidAPI-Host": "streaming-availability.p.rapidapi.com",
-      },
-    };
-
-    try {
-      const response = await fetch(url, options);
-      const result = await response.json();
-      setFilmInfo(result[0]);
+      if (option === "addFilm") {
+        makingObjectForAddFilm(result[0], requestTitle);
+      } else if (option === "moviePage") {
+        setMoviePageInfo(result);
+        setFilmLoaded(true);
+      } else if (option === "showPage") {
+        setMovieShowPageInfo(result);
+        setFilmLoaded(true);
+      }
     } catch (error) {
       setErrorMessage(true);
       console.error(error);
@@ -131,8 +117,10 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
   return (
     <contextData.Provider
       value={{
+        showPageInfo,
         movies,
-        addFilm,
+        getInfo,
+        setFilmLoaded,
         deleteMovie,
         shows,
         deleteShow,
@@ -142,8 +130,8 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
         setErrorMessage,
         searchBar,
         setSearchBar,
-        getInfoFilmPage,
-        filmInfo,
+        moviePageInfo,
+        filmLoaded,
       }}
     >
       {children}
