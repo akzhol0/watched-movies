@@ -44,17 +44,17 @@ function MainPage() {
           >
             {watchingMovies
               ? movies
-                  .filter((item) =>
+                  ?.filter((item) =>
                     item.title.toLowerCase().includes(searchBar)
                   )
-                  .map((item: MoviesProps) => (
+                  ?.map((item: MoviesProps) => (
                     <CardMovie key={item.id} item={item} />
                   ))
               : shows
-                  .filter((item) =>
-                    item.title.toLowerCase().includes(searchBar)
-                  )
-                  .map((item: ShowsProps) => (
+                  // ?.filter((item) =>
+                  //   item.title.toLowerCase().includes(searchBar)
+                  // )
+                  ?.map((item: ShowsProps) => (
                     <CardShow key={item.id} item={item} />
                   ))}
           </div>

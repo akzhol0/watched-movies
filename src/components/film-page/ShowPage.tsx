@@ -12,7 +12,7 @@ function ShowPage() {
   useEffect(() => {
     getInfo(title, "showPage");
   }, []);
-
+  
   return (
     <>
       <Header options={false} />

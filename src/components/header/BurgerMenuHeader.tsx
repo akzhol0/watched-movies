@@ -10,8 +10,13 @@ type BurgerMenuHeaderProps = {
   setSearchBarInput: (arg0: string) => void;
 };
 
-function BurgerMenuHeader({ setModal, searchBarInput, setSearchBarInput }: BurgerMenuHeaderProps) {
-  const { requestTitle, setSearchBar } = useContext(contextData);
+function BurgerMenuHeader({
+  setModal,
+  searchBarInput,
+  setSearchBarInput,
+}: BurgerMenuHeaderProps) {
+  const { requestTitle, setSearchBar, userInfo, userLogged, setUserLogged } =
+    useContext(contextData);
   const [burgerToggle, setBurgerToggle] = useState<boolean>(false);
 
   return (
@@ -43,17 +48,28 @@ function BurgerMenuHeader({ setModal, searchBarInput, setSearchBarInput }: Burge
             <MySearchIcon className="cursor-pointer" />
           </span>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col justify-center items-center gap-2">
           <span onClick={() => setModal(true)}>
             <MyButton className="border text-[#bebebe] hover:text-black border-[#3758c5]">
               ADD {requestTitle.toUpperCase()}
             </MyButton>
           </span>
-          <Link to="login">
-            <MyButton className="border text-[#bebebe] hover:text-black border-[#3758c5]">
-              LOG IN
-            </MyButton>
-          </Link>
+          {userLogged ? (
+            <>
+              <p className="text-white">{userInfo?.email}</p>
+              <span onClick={() => setUserLogged(false)}>
+                <MyButton className="border text-[#bebebe] hover:text-black border-[#3758c5]">
+                  Exit
+                </MyButton>
+              </span>
+            </>
+          ) : (
+            <Link to="login">
+              <MyButton className="border text-[#bebebe] hover:text-black border-[#3758c5]">
+                LOG IN
+              </MyButton>
+            </Link>
+          )}
         </div>
       </div>
     </div>

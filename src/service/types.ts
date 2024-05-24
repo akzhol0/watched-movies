@@ -14,7 +14,7 @@ export type ShowsProps = {
   title: string;
   firstAirYear: number;
   lastAirYear: number;
-  seasons: number;
+  seasonCount: number;
   showType: string;
   rating: number;
   imageCover: string;

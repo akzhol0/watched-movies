@@ -19,7 +19,7 @@ function MyModal({ modal, setModal }: MyModalProps) {
       return;
     }
 
-    getInfo(filmName, 'addFilm');
+    getInfo(filmName, `add${requestTitle}`);
     setMovieName("");
     setModal(false);
   }

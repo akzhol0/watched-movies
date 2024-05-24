@@ -12,7 +12,14 @@ type HeaderProps = {
 };
 
 function Header({ options }: HeaderProps) {
-  const { requestTitle, errorMessage, setSearchBar } = useContext(contextData);
+  const {
+    requestTitle,
+    errorMessage,
+    setSearchBar,
+    userLogged,
+    userInfo,
+    setUserLogged,
+  } = useContext(contextData);
   const [modal, setModal] = useState<boolean>(false);
   const [searchBarInput, setSearchBarInput] = useState<string>("");
 
@@ -49,13 +56,25 @@ function Header({ options }: HeaderProps) {
             <MySearchIcon className="cursor-pointer" />
           </span>
         </div>
-        <div className={options ? "hidden lg:block" : "hidden"}>
+        <div className={options ? "hidden lg:flex items-center" : "hidden"}>
           <span onClick={() => setModal(true)}>
             <MyButton>ADD {requestTitle.toUpperCase()}</MyButton>
           </span>
-          <Link to="login">
-            <MyButton>LOG IN</MyButton>
-          </Link>
+          {userLogged ? (
+            <>
+              <p>{userInfo?.email}</p>
+              <span onClick={() => {
+                setUserLogged(false);
+                localStorage.removeItem('user')
+              }}>
+                <MyButton>Exit</MyButton>
+              </span>
+            </>
+          ) : (
+            <Link to="login">
+              <MyButton>LOG IN</MyButton>
+            </Link>
+          )}
         </div>
       </div>
       <MyModal modal={modal} setModal={setModal} />
