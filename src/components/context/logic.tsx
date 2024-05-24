@@ -10,7 +10,7 @@ import db from "../../firebase/firebase";
 import { collection, doc, deleteDoc, setDoc, getDocs } from "firebase/firestore";
 
 type ContextProps = {
-  getInfo: (arg0: string, arg1: string) => void;
+  getInfo: (arg0: string | undefined, arg1: string) => void;
   movies: MoviesProps[];
   deleteMovie: (arg0: number, arg1: string) => void;
   shows: ShowsProps[];
@@ -145,7 +145,7 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
       : setShows((prev) => [showObject, ...prev]);
   };
 
-  async function getInfo(title: string, option: string) {
+  async function getInfo(title: string | undefined, option: string) {
     setFilmLoaded(false);
     const url = `https://streaming-availability.p.rapidapi.com/shows/search/title?country=us&title=${title}&output_language=en`;
     const options = {

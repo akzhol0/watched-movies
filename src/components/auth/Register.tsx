@@ -24,9 +24,8 @@ function Register() {
 
   const handleSignUp = () => {
     createUserWithEmailAndPassword(auth, login, password)
-      .then((userCredential) => {
+      .then(() => {
         setErrorMessage('Успешная регистрация')
-        const user = userCredential.user;
         navigate('/login')
       })
       .catch((err) => {
