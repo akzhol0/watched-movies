@@ -9,7 +9,7 @@ type MyModalProps = {
 };
 
 function MyModal({ modal, setModal }: MyModalProps) {
-  const { getInfo, requestTitle, setCurrentlyLoading } = useContext(contextData);
+  const { getInfo, requestTitle } = useContext(contextData);
   const [filmName, setMovieName] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
 
