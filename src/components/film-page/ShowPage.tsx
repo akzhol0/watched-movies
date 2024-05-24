@@ -5,22 +5,31 @@ import { contextData } from "../context/logic";
 import { useContext, useEffect } from "react";
 
 function ShowPage() {
-  const { getInfo, showPageInfo, filmLoaded, setFilmLoaded } = useContext(contextData);
+  const { getInfo, showPageInfo, filmLoaded, setFilmLoaded, setWatchingMovies } =
+    useContext(contextData);
   const { title } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
     getInfo(title, "showPage");
   }, []);
-  
+
   return (
     <>
       <Header options={false} />
       <div className="w-full flex flex-col items-center">
-        <div className="w-[90%] min-h-[800px] flex flex-col justify-start">
-          <span onClick={() => {navigate("/"); setFilmLoaded(false)}} className="py-4">
-            <MyButton className="bg-white hover:bg-[#c4c4c4]">Back</MyButton>
-          </span>
+        <div className="w-[90%] mt-[80px] min-h-[800px] flex flex-col justify-start">
+          <div className="py-4">
+            <span
+              onClick={() => {
+                navigate("/");
+                setFilmLoaded(false);
+                setWatchingMovies(false);
+              }}
+            >
+              <MyButton className="bg-white hover:bg-[#c4c4c4]">Back</MyButton>
+            </span>
+          </div>
           {filmLoaded ? (
             <div className="flex flex-col md:flex-row gap-5 xl:gap-0 items-center md:items-start">
               <div className="min-w-[280px] overflow-hidden rounded-[15px] relative">
@@ -39,7 +48,11 @@ function ShowPage() {
                 <div className="flex flex-col gap-2">
                   <span>
                     <h1 className="text-2xl font-bold">
-                      {showPageInfo[0].title} ({showPageInfo[0].firstAirYear + '-' + showPageInfo[0].lastAirYear})
+                      {showPageInfo[0].title} (
+                      {showPageInfo[0].firstAirYear +
+                        "-" +
+                        showPageInfo[0].lastAirYear}
+                      )
                     </h1>
                     <h5 className="mt-2 text-[#d1d1d1]">
                       {showPageInfo[0].originalTitle}
@@ -53,7 +66,10 @@ function ShowPage() {
                     </span>
                     <span className="flex">
                       <p className="w-[100px] md:w-[150px]">Seasons:</p>
-                      <p>{showPageInfo[0].seasonCount} seasons, {showPageInfo[0].episodeCount} episodes</p>
+                      <p>
+                        {showPageInfo[0].seasonCount} seasons,{" "}
+                        {showPageInfo[0].episodeCount} episodes
+                      </p>
                     </span>
                     <span className="flex">
                       <p className="w-[100px] md:w-[150px]">Genres:</p>
@@ -74,7 +90,11 @@ function ShowPage() {
 
                     <span className="flex">
                       <p className="w-[100px] md:w-[150px]">Released:</p>
-                      <p>{showPageInfo[0].firstAirYear + '-' + showPageInfo[0].lastAirYear}</p>
+                      <p>
+                        {showPageInfo[0].firstAirYear +
+                          "-" +
+                          showPageInfo[0].lastAirYear}
+                      </p>
                     </span>
                   </div>
                 </div>

@@ -1,19 +1,28 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { contextData } from "../context/logic";
 import Header from "../header/Header";
 import { MoviesProps, ShowsProps } from "../../service/types";
 import CardMovie from "./CardMovie";
 import CardShow from "./CardShow";
+import MyLoaderModal from "../UI/MyModals/MyLoaderModal";
 
 function MainPage() {
-  const { movies, shows, setRequestTitle, searchBar } = useContext(contextData);
-  const [watchingMovies, setWatchingMovies] = useState<boolean>(true);
+  const {
+    movies,
+    shows,
+    setRequestTitle,
+    searchBar,
+    currentlyLoading,
+    watchingMovies,
+    setWatchingMovies,
+  } = useContext(contextData);
 
   return (
     <>
       <Header options={true} />
+      {currentlyLoading && <MyLoaderModal />}
       <div className="w-full h-auto flex justify-center py-[30px]">
-        <section className="w-[90%] flex flex-col items-center">
+        <section className="w-[90%] mt-[80px] flex flex-col items-center">
           <div className="flex justify-center gap-5 md:gap-[100px]">
             <span
               onClick={() => {
@@ -51,9 +60,9 @@ function MainPage() {
                     <CardMovie key={item.id} item={item} />
                   ))
               : shows
-                  // ?.filter((item) =>
-                  //   item.title.toLowerCase().includes(searchBar)
-                  // )
+                  ?.filter((item) =>
+                    item.title.toLowerCase().includes(searchBar)
+                  )
                   ?.map((item: ShowsProps) => (
                     <CardShow key={item.id} item={item} />
                   ))}

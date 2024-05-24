@@ -1,13 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
-import {
-  MoviesPageProps,
-  MoviesProps,
-  ShowsProps,
-  ShowsPageProps,
-} from "../../service/types";
-import db from "../../firebase/firebase";
-
+import { MoviesPageProps, MoviesProps, ShowsProps, ShowsPageProps } from "../../service/types";
 import { collection, doc, deleteDoc, setDoc, getDocs } from "firebase/firestore";
+import db from "../../firebase/firebase";
 
 type ContextProps = {
   getInfo: (arg0: string | undefined, arg1: string) => void;
@@ -28,7 +22,13 @@ type ContextProps = {
   userInfo: any;
   userLogged: boolean;
   setUserLogged: (arg0: boolean) => void;
+  currentlyLoading: boolean;
+  setCurrentlyLoading: (arg0: boolean) => void;
+  getUserInfo: () => void;
+  watchingMovies: boolean;
+  setWatchingMovies:(arg0: boolean) => void;
 };
+
 export const contextData = createContext({} as ContextProps);
 
 type ContextOverAllProps = {
@@ -47,6 +47,8 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
   const [userLogged, setUserLogged] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<any>([]);
   const [fetched, setFetched] = useState<boolean>(false);
+  const [currentlyLoading, setCurrentlyLoading] = useState<boolean>(true);
+  const [watchingMovies, setWatchingMovies] = useState<boolean>(true);
 
   useEffect(() => {
     getUserInfo();
@@ -70,8 +72,9 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
   async function getMovies() {
     const querySnapshot = await getDocs(collection(db, "movies"));
     querySnapshot.forEach((doc: any) => {
-      setMovies((prev) => [doc.data(), ...prev]);
+      setMovies((prev) => [...prev, doc.data()]);
       setFetched(true);
+      setCurrentlyLoading(false);
     });
   }
 
@@ -79,8 +82,9 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
   async function getShows() {
     const querySnapshot = await getDocs(collection(db, "shows"));
     querySnapshot.forEach((doc: any) => {
-      setShows((prev) => [doc.data(), ...prev]);
+      setShows((prev) => [...prev, doc.data()]);
       setFetched(true);
+      setCurrentlyLoading(false);
     });
   }
 
@@ -134,7 +138,7 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
       title: item.title,
       firstAirYear: item.firstAirYear,
       lastAirYear: item.lastAirYear,
-      seasonCount: item.seasons,
+      seasonCount: item.seasonCount,
       showType: item.showType,
       rating: item.rating,
       imageCover: item.imageSet.verticalPoster.w720,
@@ -217,6 +221,11 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
         userInfo,
         userLogged,
         setUserLogged,
+        currentlyLoading,
+        setCurrentlyLoading,
+        getUserInfo,
+        watchingMovies,
+        setWatchingMovies,
       }}
     >
       {children}

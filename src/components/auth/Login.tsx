@@ -8,7 +8,7 @@ import { auth } from "../../firebase/firebase";
 import { contextData } from "../context/logic";
 
 function Login() {
-  const { setUserLogged } = useContext(contextData);
+  const { setUserLogged, getUserInfo } = useContext(contextData);
   const [eye, setEye] = useState<boolean>(false);
   const [login, setLogin] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -22,6 +22,7 @@ function Login() {
         const user = userCredential.user;
         const userLS = JSON.stringify(user);
         localStorage.setItem('user', userLS);
+        getUserInfo();
         navigate('/')
       })
       .catch((err) => {

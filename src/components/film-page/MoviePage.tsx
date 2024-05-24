@@ -5,7 +5,7 @@ import { useContext, useEffect } from "react";
 import { contextData } from "../context/logic";
 
 function MoviePage() {
-  const { getInfo, filmLoaded, moviePageInfo, setFilmLoaded } =
+  const { getInfo, filmLoaded, moviePageInfo, setFilmLoaded, setWatchingMovies } =
     useContext(contextData);
   const { title } = useParams();
   const navigate = useNavigate();
@@ -18,11 +18,12 @@ function MoviePage() {
     <>
       <Header options={false} />
       <div className="w-full flex flex-col items-center">
-        <div className="w-[90%] min-h-[800px] flex flex-col justify-start">
+        <div className="w-[90%] mt-[80px] min-h-[800px] flex flex-col justify-start">
           <span
             onClick={() => {
               navigate("/");
               setFilmLoaded(false);
+              setWatchingMovies(true);
             }}
             className="py-4"
           >
