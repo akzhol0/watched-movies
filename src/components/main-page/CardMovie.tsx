@@ -9,7 +9,7 @@ type CardProps = {
 };
 
 function Card({ item }: CardProps) {
-  const { deleteMovie, requestTitle } = useContext(contextData);
+  const { deleteMovie } = useContext(contextData);
 
   return (
     <div className="w-full h-[500px] relative flex flex-col overflow-hidden rounded-lg text-white">
@@ -29,7 +29,7 @@ function Card({ item }: CardProps) {
         <p>{[...String(item?.rating)].join(".")}</p>
       </div>
       <div
-        onClick={() => deleteMovie(Number(item?.id), requestTitle)}
+        onClick={() => deleteMovie(Number(item?.id))}
         className="px-2 absolute bottom-[104px] right-0"
       >
         <MyButton className="bg-red-600 hover:bg-red-700 rounded-[7px] text-sm">

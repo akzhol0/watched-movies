@@ -6,9 +6,9 @@ import db from "../../firebase/firebase";
 type ContextProps = {
   getInfo: (arg0: string | undefined, arg1: string) => void;
   movies: MoviesPageProps[];
-  deleteMovie: (arg0: number, arg1: string) => void;
+  deleteMovie: (arg0: number) => void;
   shows: ShowsPageProps[];
-  deleteShow: (arg0: number, arg1: string) => void;
+  deleteShow: (arg0: number) => void;
   requestTitle: string;
   setRequestTitle: (arg0: string) => void;
   errorMessage: boolean;
@@ -68,31 +68,36 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
         const docSnap = await getDoc(movieRef);
 
         if (docSnap.exists()) {
-          getAllFilms(userParsed)
+          getAllFilms(userParsed);
         } else {
           console.log("doesnt exist");
-        } 
-      }   getff()
+        }
+      }
+      getff();
 
       setUserLogged(true);
       setUserInfo(userParsed);
     } else {
-      console.log('user didnt logged')
+      console.log("user didnt logged");
     }
   };
 
   // get all films from firebase
   async function getAllFilms(userParsed: any) {
-    const queryShows = await getDocs(collection(db, `${userParsed.uid}`, "shows", "shows-subj"));
+    const queryShows = await getDocs(
+      collection(db, `${userParsed.uid}`, "shows", "shows-subj")
+    );
     queryShows.forEach((doc: any) => {
-      console.log('adding movies')
+      console.log("adding movies");
       setShows((prev) => [...prev, doc.data()]);
       setFetched(true);
     });
 
-    const queryMovies = await getDocs(collection(db, `${userParsed.uid}`, "movies", "movies-subj"));
+    const queryMovies = await getDocs(
+      collection(db, `${userParsed.uid}`, "movies", "movies-subj")
+    );
     queryMovies.forEach((doc: any) => {
-      console.log('adding shows')
+      console.log("adding shows");
       setMovies((prev) => [...prev, doc.data()]);
       setCurrentlyLoading(false);
       setFetched(true);
@@ -101,73 +106,91 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
 
   // set movies
   async function addMovies(item: any, reqtitle: string) {
-    await setDoc(doc(db, `${userInfo.uid}`, "movies", "movies-subj", `${reqtitle + item.id}`), {
-      itemType: item.itemType,
-      addedTime: new Date(  ),
-      showType: item.showType,
-      id: Number(item.id),
-      userRate: 0,
-      imdbId: item.imdbId,
-      tmdbId: item.tmdbId,
-      title: item.title,
-      overview: item.overview,
-      releaseYear: item.releaseYear,
-      originalTitle: item.originalTitle,
-      genres: item.genres,
-      directors: item.directors,
-      cast: item.cast,
-      rating: item.rating,
-      imageSet: {
-        verticalPoster: {
-          w240: item.imageSet.verticalPoster.w240,
-          w360: item.imageSet.verticalPoster.w360,
-          w480: item.imageSet.verticalPoster.w480,
-          w600: item.imageSet.verticalPoster.w600,
-          w720: item.imageSet.verticalPoster.w720,
+    await setDoc(
+      doc(
+        db,
+        `${userInfo.uid}`,
+        "movies",
+        "movies-subj",
+        `${reqtitle + item.id}`
+      ),
+      {
+        itemType: item.itemType,
+        addedTime: new Date(),
+        showType: item.showType,
+        id: Number(item.id),
+        userRate: 0,
+        imdbId: item.imdbId,
+        tmdbId: item.tmdbId,
+        title: item.title,
+        overview: item.overview,
+        releaseYear: item.releaseYear,
+        originalTitle: item.originalTitle,
+        genres: item.genres,
+        directors: item.directors,
+        cast: item.cast,
+        rating: item.rating,
+        imageSet: {
+          verticalPoster: {
+            w240: item.imageSet.verticalPoster.w240,
+            w360: item.imageSet.verticalPoster.w360,
+            w480: item.imageSet.verticalPoster.w480,
+            w600: item.imageSet.verticalPoster.w600,
+            w720: item.imageSet.verticalPoster.w720,
+          },
+          horizontalPoster: "",
+          verticalBackdrop: "",
+          horizontalBackdrop: "",
         },
-        horizontalPoster: "",
-        verticalBackdrop: "",
-        horizontalBackdrop: "",
-      },
-      streamingOptions: "",
-    });
+        streamingOptions: "",
+      }
+    );
   }
 
   // set shows
   async function addShows(item: any, reqtitle: string) {
-    await setDoc(doc(db, `${userInfo.uid}`, "shows", "shows-subj", `${reqtitle + item.id}`), {
-      itemType: item.itemType,
-      showType: item.showType,
-      addedTime: new Date(),
-      id: Number(item.id),
-      imdbId: item.imdbId,
-      tmdbId: item.tmdbId,
-      title: item.title,
-      userRate: 0,
-      overview: item.overview,
-      firstAirYear: item.firstAirYear,
-      lastAirYear: item.lastAirYear,
-      originalTitle: item.originalTitle,
-      genres: item.genres,
-      creators: item.creators,
-      cast: item.cast,
-      rating: item.rating,
-      seasonCount: item.seasonCount,
-      episodeCount: item.episodeCount,
-      imageSet: {
-        verticalPoster: {
-          w240: item.imageSet.verticalPoster.w240,
-          w360: item.imageSet.verticalPoster.w360,
-          w480: item.imageSet.verticalPoster.w480,
-          w600: item.imageSet.verticalPoster.w600,
-          w720: item.imageSet.verticalPoster.w720,
+    await setDoc(
+      doc(
+        db,
+        `${userInfo.uid}`,
+        "shows",
+        "shows-subj",
+        `${reqtitle + item.id}`
+      ),
+      {
+        itemType: item.itemType,
+        showType: item.showType,
+        addedTime: new Date(),
+        id: Number(item.id),
+        imdbId: item.imdbId,
+        tmdbId: item.tmdbId,
+        title: item.title,
+        userRate: 0,
+        overview: item.overview,
+        firstAirYear: item.firstAirYear,
+        lastAirYear: item.lastAirYear,
+        originalTitle: item.originalTitle,
+        genres: item.genres,
+        creators: item.creators,
+        cast: item.cast,
+        rating: item.rating,
+        seasonCount: item.seasonCount,
+        episodeCount: item.episodeCount,
+        imageSet: {
+          verticalPoster: {
+            w240: item.imageSet.verticalPoster.w240,
+            w360: item.imageSet.verticalPoster.w360,
+            w480: item.imageSet.verticalPoster.w480,
+            w600: item.imageSet.verticalPoster.w600,
+            w720: item.imageSet.verticalPoster.w720,
+          },
+          horizontalPoster: "",
+          verticalBackdrop: "",
+          horizontalBackdrop: "",
         },
-        horizontalPoster: "",
-        verticalBackdrop: "",
-        horizontalBackdrop: "",
-      },
-      streamingOptions: "",
-    });
+        streamingOptions: "",
+      }
+    );
   }
 
   // get info for adding films
@@ -200,15 +223,16 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
   }
 
   // delete movie
-  const deleteMovie = (id: number, title: string) => {
+  const deleteMovie = (id: number) => {
+    console.log(userInfo.uid);
     setMovies(movies.filter((item) => Number(item.id) !== Number(id)));
-    deleteDoc(doc(db, "movies", `${title + id}`));
+    deleteDoc(doc(db, `${userInfo.uid}`, "movies", "movies-subj", `movie${id}`));
   };
 
   // delete show
-  const deleteShow = (id: number, title: string) => {
+  const deleteShow = (id: number) => {
     setShows(shows.filter((item) => Number(item.id) !== Number(id)));
-    deleteDoc(doc(db, "shows", `${title + id}`));
+    deleteDoc(doc(db, `${userInfo.uid}`, "shows", "shows-subj", `show${id}`));
   };
 
   return (
@@ -217,9 +241,9 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
         movies,
         getInfo,
         setFilmLoaded,
-        deleteMovie,
         shows,
         deleteShow,
+        deleteMovie,
         requestTitle,
         setRequestTitle,
         errorMessage,
@@ -236,7 +260,7 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
         watchingMovies,
         setWatchingMovies,
         setMovies,
-        setShows
+        setShows,
       }}
     >
       {children}

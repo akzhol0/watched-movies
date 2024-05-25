@@ -7,7 +7,7 @@ import db from "../../firebase/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 function MoviePage() {
-  const { setWatchingMovies, setErrorMessage } = useContext(contextData);
+  const { setWatchingMovies, setErrorMessage, userInfo } = useContext(contextData);
   const [moviePageInfo, setMoviePageInfo] = useState<any>([]);
   const [loaded, setLoaded] = useState<boolean>(false);
   const [userRate, setUserRate] = useState<number>(0);
@@ -15,7 +15,7 @@ function MoviePage() {
   const navigate = useNavigate();
 
   async function updateRate() {
-    const movieRef = doc(db, "movies", `movie${id}`);
+    const movieRef = doc(db, `${userInfo.uid}`, "movies", "movies-subj", `movie${id}`);
 
     await updateDoc(movieRef, {
       userRate: userRate,
@@ -23,7 +23,7 @@ function MoviePage() {
   }
 
   async function getMovieInfo() {
-    const docRef = doc(db, "movies", `movie${id}`);
+    const docRef = doc(db, `${userInfo.uid}`, "movies", "movies-subj", `movie${id}`);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
@@ -150,7 +150,7 @@ function MoviePage() {
                             <p>User rate: {userRate}</p>
                           </span>
                           <span onClick={() => updateRate()}>
-                            <MyButton className="bg-[#3758c5] hover:bg-[#344c99]">
+                            <MyButton className="bg-[#3758c5] hover:bg-[#36509e]">
                               Submit
                             </MyButton>
                           </span>

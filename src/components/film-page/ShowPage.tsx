@@ -7,15 +7,23 @@ import db from "../../firebase/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 function ShowPage() {
-  const { setWatchingMovies, setErrorMessage } = useContext(contextData);
+  const { setWatchingMovies, setErrorMessage, userInfo } = useContext(contextData);
   const [userRate, setUserRate] = useState<number>(0);
   const [moviePageInfo, setMoviePageInfo] = useState<any>([]);
   const [loaded, setLoaded] = useState<boolean>(false);
   const { id } = useParams();
   const navigate = useNavigate();
 
+  async function updateRate() {
+    const showRef = doc(db, `${userInfo.uid}`, "shows", "shows-subj", `show${id}`);
+
+    await updateDoc(showRef, {
+      userRate: userRate,
+    });
+  }
+
   async function getMovieInfo() {
-    const docRef = doc(db, "shows", `show${id}`);
+    const docRef = doc(db, `${userInfo.uid}`, "shows", "shows-subj", `show${id}`)
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
@@ -24,14 +32,6 @@ function ShowPage() {
     } else {
       setErrorMessage(true);
     }
-  }
-
-  async function updateRate() {
-    const showRef = doc(db, "shows", `show${id}`);
-
-    await updateDoc(showRef, {
-      userRate: userRate,
-    });
   }
 
   useEffect(() => {
@@ -157,7 +157,7 @@ function ShowPage() {
                             <p>User rate: {userRate}</p>
                           </span>
                           <span onClick={() => updateRate()}>
-                            <MyButton className="bg-[#3758c5] hover:bg-[#344c99]">
+                            <MyButton className="bg-[#3758c5] hover:bg-[#36509e]">
                               Submit
                             </MyButton>
                           </span>
