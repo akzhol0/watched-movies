@@ -1,11 +1,11 @@
 import { useContext } from "react";
-import { ShowsProps } from "../../service/types";
+import { ShowsPageProps } from "../../service/types";
 import MyButton from "../UI/MyButtons/MyButton";
 import { contextData } from "../context/logic";
 import { Link } from "react-router-dom";
 
 type CardProps = {
-  item: ShowsProps;
+  item: ShowsPageProps;
 };
 function Card({ item }: CardProps) {
   const { deleteShow, requestTitle } = useContext(contextData);
@@ -14,7 +14,7 @@ function Card({ item }: CardProps) {
     <div className="w-full h-[500px] relative flex flex-col overflow-hidden rounded-lg text-white">
       <span className="overflow-hidden">
         <img
-          src={item.imageCover}
+          src={item.imageSet.verticalPoster.w720}
           className="w-full h-[400px] overflow-hidden object-cover hover:scale-105 duration-150"
         />
       </span>

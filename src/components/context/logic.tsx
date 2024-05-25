@@ -1,13 +1,13 @@
 import React, { createContext, useEffect, useState } from "react";
-import { MoviesPageProps, MoviesProps, ShowsProps, ShowsPageProps } from "../../service/types";
+import { MoviesPageProps, ShowsPageProps } from "../../service/types";
 import { collection, doc, deleteDoc, setDoc, getDocs } from "firebase/firestore";
 import db from "../../firebase/firebase";
 
 type ContextProps = {
   getInfo: (arg0: string | undefined, arg1: string) => void;
-  movies: MoviesProps[];
+  movies: MoviesPageProps[];
   deleteMovie: (arg0: number, arg1: string) => void;
-  shows: ShowsProps[];
+  shows: ShowsPageProps[];
   deleteShow: (arg0: number, arg1: string) => void;
   requestTitle: string;
   setRequestTitle: (arg0: string) => void;
@@ -16,8 +16,6 @@ type ContextProps = {
   searchBar: string;
   setSearchBar: (arg0: string) => void;
   filmLoaded: boolean;
-  moviePageInfo: MoviesPageProps[];
-  showPageInfo: ShowsPageProps[];
   setFilmLoaded: (arg0: boolean) => void;
   userInfo: any;
   userLogged: boolean;
@@ -26,7 +24,7 @@ type ContextProps = {
   setCurrentlyLoading: (arg0: boolean) => void;
   getUserInfo: () => void;
   watchingMovies: boolean;
-  setWatchingMovies:(arg0: boolean) => void;
+  setWatchingMovies: (arg0: boolean) => void;
 };
 
 export const contextData = createContext({} as ContextProps);
@@ -36,16 +34,16 @@ type ContextOverAllProps = {
 };
 
 export function ContextOverAll({ children }: ContextOverAllProps) {
-  const [movies, setMovies] = useState<MoviesProps[]>([]);
-  const [shows, setShows] = useState<ShowsProps[]>([]);
+  const [movies, setMovies] = useState<MoviesPageProps[]>([]);
+  const [shows, setShows] = useState<ShowsPageProps[]>([]);
+  const [userInfo, setUserInfo] = useState<any>([]);
+
   const [requestTitle, setRequestTitle] = useState<string>("movie");
-  const [errorMessage, setErrorMessage] = useState<boolean>(false);
   const [searchBar, setSearchBar] = useState<string>("");
-  const [moviePageInfo, setMoviePageInfo] = useState<MoviesPageProps[]>([]);
-  const [showPageInfo, setMovieShowPageInfo] = useState<ShowsPageProps[]>([]);
+
+  const [errorMessage, setErrorMessage] = useState<boolean>(false);
   const [filmLoaded, setFilmLoaded] = useState<boolean>(false);
   const [userLogged, setUserLogged] = useState<boolean>(false);
-  const [userInfo, setUserInfo] = useState<any>([]);
   const [fetched, setFetched] = useState<boolean>(false);
   const [currentlyLoading, setCurrentlyLoading] = useState<boolean>(true);
   const [watchingMovies, setWatchingMovies] = useState<boolean>(true);
@@ -53,11 +51,11 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
   useEffect(() => {
     getUserInfo();
     if (!fetched) {
-      getMovies();
-      getShows();
+      getAllFilms();
     }
   }, []);
 
+  // get user info if registered from localStor
   const getUserInfo = () => {
     const user = localStorage.getItem("user");
     const userParsed = user ? JSON.parse(user) : null;
@@ -68,94 +66,101 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
     }
   };
 
-  // get movies
-  async function getMovies() {
-    const querySnapshot = await getDocs(collection(db, "movies"));
-    querySnapshot.forEach((doc: any) => {
-      setMovies((prev) => [...prev, doc.data()]);
-      setFetched(true);
-      setCurrentlyLoading(false);
-    });
-  }
-
-  // get shows
-  async function getShows() {
-    const querySnapshot = await getDocs(collection(db, "shows"));
-    querySnapshot.forEach((doc: any) => {
+  // get all films from firebase
+  async function getAllFilms() {
+    const queryShows = await getDocs(collection(db, "shows"));
+    queryShows.forEach((doc: any) => {
       setShows((prev) => [...prev, doc.data()]);
       setFetched(true);
+    });
+
+    const queryMovies = await getDocs(collection(db, "movies"));
+    queryMovies.forEach((doc: any) => {
+      setMovies((prev) => [...prev, doc.data()]);
       setCurrentlyLoading(false);
+      setFetched(true);
     });
   }
 
   // set movies
   async function addMovies(item: any, reqtitle: string) {
     await setDoc(doc(db, "movies", `${reqtitle + item.id}`), {
-      title: item.title,
-      id: Number(item.id),
-      imdnId: item.imdbId,
-      releaseYear: item.releaseYear,
+      itemType: item.itemType,
+      addedTime: Date.now(),
       showType: item.showType,
-      rating: Number(item.rating),
-      imageCover: item.imageSet.verticalPoster.w480,
+      id: Number(item.id),
+      userRate: 0,
+      imdbId: item.imdbId,
+      tmdbId: item.tmdbId,
+      title: item.title,
+      overview: item.overview,
+      releaseYear: item.releaseYear,
+      originalTitle: item.originalTitle,
+      genres: item.genres,
+      directors: item.directors,
+      cast: item.cast,
+      rating: item.rating,
+      imageSet: {
+        verticalPoster: {
+          w240: item.imageSet.verticalPoster.w240,
+          w360: item.imageSet.verticalPoster.w360,
+          w480: item.imageSet.verticalPoster.w480,
+          w600: item.imageSet.verticalPoster.w600,
+          w720: item.imageSet.verticalPoster.w720,
+        },
+        horizontalPoster: "",
+        verticalBackdrop: "",
+        horizontalBackdrop: "",
+      },
+      streamingOptions: "",
     });
   }
 
   // set shows
   async function addShows(item: any, reqtitle: string) {
     await setDoc(doc(db, "shows", `${reqtitle + item.id}`), {
+      itemType: item.itemType,
+      showType: item.showType,
+      addedTime: Date.now(),
       id: Number(item.id),
       imdbId: item.imdbId,
+      tmdbId: item.tmdbId,
       title: item.title,
+      userRate: 0,
+      overview: item.overview,
       firstAirYear: item.firstAirYear,
       lastAirYear: item.lastAirYear,
-      seasonCount: item.seasonCount,
-      showType: item.showType,
+      originalTitle: item.originalTitle,
+      genres: item.genres,
+      creators: item.creators,
+      cast: item.cast,
       rating: item.rating,
-      imageCover: item.imageSet.verticalPoster.w480,
+      seasonCount: item.seasonCount,
+      episodeCount: item.episodeCount,
+      imageSet: {
+        verticalPoster: {
+          w240: item.imageSet.verticalPoster.w240,
+          w360: item.imageSet.verticalPoster.w360,
+          w480: item.imageSet.verticalPoster.w480,
+          w600: item.imageSet.verticalPoster.w600,
+          w720: item.imageSet.verticalPoster.w720,
+        },
+        horizontalPoster: "",
+        verticalBackdrop: "",
+        horizontalBackdrop: "",
+      },
+      streamingOptions: "",
     });
   }
 
-  const makingObjectForAddFilm = (item: any, reqTitle: string) => {
-    if (item === undefined) {
-      setErrorMessage(true);
-      return;
-    }
-
-    const movieObject = {
-      imdbId: item.imdbId,
-      title: item.title,
-      id: Number(item.id),
-      releaseYear: item.releaseYear,
-      showType: item.showType,
-      rating: item.rating,
-      imageCover: item.imageSet.verticalPoster.w720,
-    };
-
-    const showObject = {
-      id: Number(item.id),
-      imdbId: item.imdbId,
-      title: item.title,
-      firstAirYear: item.firstAirYear,
-      lastAirYear: item.lastAirYear,
-      seasonCount: item.seasonCount,
-      showType: item.showType,
-      rating: item.rating,
-      imageCover: item.imageSet.verticalPoster.w720,
-    };
-
-    reqTitle === "movie"
-      ? setMovies((prev) => [movieObject, ...prev])
-      : setShows((prev) => [showObject, ...prev]);
-  };
-
+  // get info for adding films
   async function getInfo(title: string | undefined, option: string) {
     setFilmLoaded(false);
     const url = `https://streaming-availability.p.rapidapi.com/shows/search/title?country=us&title=${title}&output_language=en`;
     const options = {
       method: "GET",
       headers: {
-        "x-rapidapi-key": "af2505537dmsh2474d2c04c07223p1525f4jsne7cecc4f7ee4",
+        "x-rapidapi-key": "3d4873dbedmsh26c0c5fe6f0834cp163b55jsn6595affd0732",
         "x-rapidapi-host": "streaming-availability.p.rapidapi.com",
       },
     };
@@ -163,26 +168,13 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
     try {
       const response = await fetch(url, options);
       const result = await response.json();
+
       if (option === "addmovie") {
         addMovies(result[0], requestTitle);
-        makingObjectForAddFilm(result[0], requestTitle);
+        setMovies((prev) => [result[0], ...prev]);
       } else if (option === "addshow") {
         addShows(result[0], requestTitle);
-        makingObjectForAddFilm(result[0], requestTitle);
-      } else if (option === "moviePage") {
-        if (result.message) {
-          setErrorMessage(true);
-          return;
-        }
-        setMoviePageInfo(result);
-        setFilmLoaded(true);
-      } else if (option === "showPage") {
-        if (result.message) {
-          setErrorMessage(true);
-          return;
-        }
-        setMovieShowPageInfo(result);
-        setFilmLoaded(true);
+        setShows((prev) => [result[0], ...prev]);
       }
     } catch (error) {
       setErrorMessage(true);
@@ -190,20 +182,21 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
     }
   }
 
+  // delete movie
   const deleteMovie = (id: number, title: string) => {
-    setMovies(movies.filter((item) => item.id !== id));
+    setMovies(movies.filter((item) => Number(item.id) !== Number(id)));
     deleteDoc(doc(db, "movies", `${title + id}`));
   };
 
+  // delete show
   const deleteShow = (id: number, title: string) => {
-    setShows(shows.filter((item) => item.id !== id));
+    setShows(shows.filter((item) => Number(item.id) !== Number(id)));
     deleteDoc(doc(db, "shows", `${title + id}`));
   };
 
   return (
     <contextData.Provider
       value={{
-        showPageInfo,
         movies,
         getInfo,
         setFilmLoaded,
@@ -216,7 +209,6 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
         setErrorMessage,
         searchBar,
         setSearchBar,
-        moviePageInfo,
         filmLoaded,
         userInfo,
         userLogged,

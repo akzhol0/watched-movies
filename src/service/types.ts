@@ -1,25 +1,3 @@
-export type MoviesProps = {
-  id: number;
-  imdbId: string;
-  title: string;
-  releaseYear: number;
-  showType: string;
-  rating: number;
-  imageCover: string;
-};
-
-export type ShowsProps = {
-  id: number;
-  imdbId: string;
-  title: string;
-  firstAirYear: number;
-  lastAirYear: number;
-  seasonCount: number;
-  showType: string;
-  rating: number;
-  imageCover: string;
-};
-
 type genres = {
   name: string;
   id: string;
@@ -29,7 +7,9 @@ export type MoviesPageProps = {
   itemType: string;
   showType: string;
   id: number;
+  addedTime: number;
   imdbId: string;
+  userRate: number;
   title: string;
   overview: string;
   releaseYear: number;
@@ -46,20 +26,8 @@ export type MoviesPageProps = {
       w600: string;
       w720: string;
     };
-    horizontalPoster: {
-      w360: string;
-      w480: string;
-      w720: string;
-      w1080: string;
-      w1440: string;
-    };
-    horizontalBackdrop: {
-      w360: string;
-      w480: string;
-      w720: string;
-      w1080: string;
-      w1440: string;
-    };
+    horizontalPoster: any;
+    horizontalBackdrop: any;
   };
   streamingOptions: any;
 };
@@ -68,6 +36,8 @@ export type ShowsPageProps = {
   itemType: string;
   showType: string;
   id: number;
+  userRate: number;
+  addedTime: number;
   imdbId: string;
   tmdbId: string;
   title: string;
@@ -89,27 +59,9 @@ export type ShowsPageProps = {
       w600: string;
       w720: string;
     };
-    horizontalPoster: {
-      w360: string;
-      w480: string;
-      w720: string;
-      w1080: string;
-      w1440: string;
-    };
-    verticalBackdrop: {
-      w240: string;
-      w360: string;
-      w480: string;
-      w600: string;
-      w72: string;
-    };
-    horizontalBackdrop: {
-      w360: string;
-      w480: string;
-      w720: string;
-      w1080: string;
-      w1440: string;
-    };
+    horizontalPoster: any;
+    verticalBackdrop: any;
+    horizontalBackdrop: any;
   };
   streamingOptions: any;
 };

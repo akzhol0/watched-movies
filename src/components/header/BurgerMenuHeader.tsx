@@ -57,7 +57,12 @@ function BurgerMenuHeader({
           {userLogged ? (
             <>
               <p className="text-white">{userInfo?.email}</p>
-              <span onClick={() => setUserLogged(false)}>
+              <span
+                onClick={() => {
+                  localStorage.removeItem("user");
+                  setUserLogged(false);
+                }}
+              >
                 <MyButton className="border text-[#bebebe] hover:text-black border-[#3758c5]">
                   Exit
                 </MyButton>

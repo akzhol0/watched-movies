@@ -9,7 +9,7 @@ type MyModalProps = {
 };
 
 function MyModal({ modal, setModal }: MyModalProps) {
-  const { getInfo, requestTitle, setCurrentlyLoading } = useContext(contextData);
+  const { getInfo, requestTitle } = useContext(contextData);
   const [filmName, setMovieName] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
 
@@ -26,7 +26,7 @@ function MyModal({ modal, setModal }: MyModalProps) {
 
   return (
     <>
-      {modal ? (
+      {modal && (
         <div className="w-full h-screen bg-black absolute bottom-0 opacity-90 flex justify-center z-50">
           <div className="mt-[100px]">
             <div className="flex flex-col md:flex-row gap-3 items-center">
@@ -53,8 +53,6 @@ function MyModal({ modal, setModal }: MyModalProps) {
             </p>
           </div>
         </div>
-      ) : (
-        ""
       )}
     </>
   );

@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { contextData } from "../context/logic";
 import Header from "../header/Header";
-import { MoviesProps, ShowsProps } from "../../service/types";
+import { MoviesPageProps, ShowsPageProps } from "../../service/types";
 import CardMovie from "./CardMovie";
 import CardShow from "./CardShow";
 import MyLoaderModal from "../UI/MyModals/MyLoaderModal";
@@ -54,16 +54,16 @@ function MainPage() {
             {watchingMovies
               ? movies
                   ?.filter((item) =>
-                    item.title.toLowerCase().includes(searchBar)
+                    item.title?.toLowerCase().includes(searchBar)
                   )
-                  ?.map((item: MoviesProps) => (
+                  ?.map((item: MoviesPageProps) => (
                     <CardMovie key={item.id} item={item} />
                   ))
               : shows
                   ?.filter((item) =>
-                    item.title.toLowerCase().includes(searchBar)
+                    item.title?.toLowerCase().includes(searchBar)
                   )
-                  ?.map((item: ShowsProps) => (
+                  ?.map((item: ShowsPageProps) => (
                     <CardShow key={item.id} item={item} />
                   ))}
           </div>
