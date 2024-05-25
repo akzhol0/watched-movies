@@ -13,7 +13,7 @@ type HeaderProps = {
 
 function Header({ options }: HeaderProps) {
   const navigate = useNavigate();
-  
+
   const {
     requestTitle,
     errorMessage,
@@ -31,11 +31,13 @@ function Header({ options }: HeaderProps) {
   return (
     <>
       <div className="w-full h-[80px] fixed flex justify-center items-center bg-[#131313] z-20">
-        <BurgerMenuHeader
-          setSearchBarInput={setSearchBarInput}
-          searchBarInput={searchBarInput}
-          setModal={setModal}
-        />
+        {options && (
+          <BurgerMenuHeader
+            setSearchBarInput={setSearchBarInput}
+            searchBarInput={searchBarInput}
+            setModal={setModal}
+          />
+        )}
         <div
           className={
             options
@@ -74,9 +76,9 @@ function Header({ options }: HeaderProps) {
                     setUserLogged(false);
                     localStorage.removeItem("user");
                     getUserInfo();
-                    navigate('/login')
-                    setMovies([])
-                    setShows([])
+                    navigate("/login");
+                    setMovies([]);
+                    setShows([]);
                   }}
                 >
                   <MyButton>Exit</MyButton>

@@ -118,11 +118,11 @@ function ShowPage() {
                       </div>
                       <div className="max-w-[500px] flex gap-[40px]">
                         <p className="w-[120px]">Rating imbd:</p>
-                        <p>
+                        <span>
                           {[...String(moviePageInfo.rating)].join(".") +
                             "/" +
                             10}
-                        </p>
+                        </span>
                       </div>
                       <div className="max-w-[500px] flex gap-[40px]">
                         <p className="w-[120px]">Rating user:</p>
