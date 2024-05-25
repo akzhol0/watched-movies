@@ -25,8 +25,7 @@ function Register() {
   const handleSignUp = () => {
     createUserWithEmailAndPassword(auth, login, password)
       .then(() => {
-        setErrorMessage('Успешная регистрация')
-        navigate('/login')
+        navigate("/login");
       })
       .catch((err) => {
         if (err.code === "auth/invalid-email") {
@@ -35,10 +34,10 @@ function Register() {
           setErrorMessage("Неправильный пароль!");
         } else if (err.code === "auth/weak-password") {
           setErrorMessage("Слабый пароль!");
-        } else if (err.code === 'auth/email-already-in-use') {
-          setErrorMessage('Эта почта уже используется');
+        } else if (err.code === "auth/email-already-in-use") {
+          setErrorMessage("Эта почта уже используется");
         } else {
-          setErrorMessage(err.code)
+          setErrorMessage(err.code);
         }
       });
   };

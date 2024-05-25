@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import { MoviesPageProps, ShowsPageProps } from "../../service/types";
-import { collection, doc, deleteDoc, setDoc, getDocs } from "firebase/firestore";
+import { collection, doc, deleteDoc, setDoc, getDocs, getDoc } from "firebase/firestore";
 import db from "../../firebase/firebase";
 
 type ContextProps = {
@@ -25,6 +25,8 @@ type ContextProps = {
   getUserInfo: () => void;
   watchingMovies: boolean;
   setWatchingMovies: (arg0: boolean) => void;
+  setMovies: (arg0: MoviesPageProps[]) => void;
+  setShows: (arg0: ShowsPageProps[]) => void;
 };
 
 export const contextData = createContext({} as ContextProps);
@@ -49,9 +51,8 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
   const [watchingMovies, setWatchingMovies] = useState<boolean>(true);
 
   useEffect(() => {
-    getUserInfo();
     if (!fetched) {
-      getAllFilms();
+      getUserInfo();
     }
   }, []);
 
@@ -61,21 +62,37 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
     const userParsed = user ? JSON.parse(user) : null;
 
     if (userParsed !== null) {
+      async function getff() {
+        setUserLogged(true);
+        const movieRef = doc(db, `${userParsed.uid}`, "shows");
+        const docSnap = await getDoc(movieRef);
+
+        if (docSnap.exists()) {
+          getAllFilms(userParsed)
+        } else {
+          console.log("doesnt exist");
+        } 
+      }   getff()
+
       setUserLogged(true);
       setUserInfo(userParsed);
+    } else {
+      console.log('user didnt logged')
     }
   };
 
   // get all films from firebase
-  async function getAllFilms() {
-    const queryShows = await getDocs(collection(db, "shows"));
+  async function getAllFilms(userParsed: any) {
+    const queryShows = await getDocs(collection(db, `${userParsed.uid}`, "shows", "shows-subj"));
     queryShows.forEach((doc: any) => {
+      console.log('adding movies')
       setShows((prev) => [...prev, doc.data()]);
       setFetched(true);
     });
 
-    const queryMovies = await getDocs(collection(db, "movies"));
+    const queryMovies = await getDocs(collection(db, `${userParsed.uid}`, "movies", "movies-subj"));
     queryMovies.forEach((doc: any) => {
+      console.log('adding shows')
       setMovies((prev) => [...prev, doc.data()]);
       setCurrentlyLoading(false);
       setFetched(true);
@@ -84,9 +101,9 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
 
   // set movies
   async function addMovies(item: any, reqtitle: string) {
-    await setDoc(doc(db, "movies", `${reqtitle + item.id}`), {
+    await setDoc(doc(db, `${userInfo.uid}`, "movies", "movies-subj", `${reqtitle + item.id}`), {
       itemType: item.itemType,
-      addedTime: Date.now(),
+      addedTime: new Date(  ),
       showType: item.showType,
       id: Number(item.id),
       userRate: 0,
@@ -118,10 +135,10 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
 
   // set shows
   async function addShows(item: any, reqtitle: string) {
-    await setDoc(doc(db, "shows", `${reqtitle + item.id}`), {
+    await setDoc(doc(db, `${userInfo.uid}`, "shows", "shows-subj", `${reqtitle + item.id}`), {
       itemType: item.itemType,
       showType: item.showType,
-      addedTime: Date.now(),
+      addedTime: new Date(),
       id: Number(item.id),
       imdbId: item.imdbId,
       tmdbId: item.tmdbId,
@@ -218,6 +235,8 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
         getUserInfo,
         watchingMovies,
         setWatchingMovies,
+        setMovies,
+        setShows
       }}
     >
       {children}

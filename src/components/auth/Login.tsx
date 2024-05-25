@@ -1,39 +1,63 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Header from "../header/Header";
 import { Link, useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import MyButton from "../UI/MyButtons/MyButton";
 import "../../assets/styles/global.scss";
 import { auth } from "../../firebase/firebase";
+import db from "../../firebase/firebase";
 import { contextData } from "../context/logic";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 function Login() {
-  const { setUserLogged, getUserInfo } = useContext(contextData);
+  const { setUserLogged, getUserInfo, userLogged } = useContext(contextData);
   const [eye, setEye] = useState<boolean>(false);
   const [login, setLogin] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (userLogged) {
+      navigate('/')
+      console.log('navigated login')
+    }
+  }, [])
+
   const handleSignIn = () => {
     signInWithEmailAndPassword(auth, login, password)
       .then((userCredential) => {
-        setUserLogged(true);    
         const user = userCredential.user;
         const userLS = JSON.stringify(user);
-        localStorage.setItem('user', userLS);
+        localStorage.setItem("user", userLS);
+
+        async function getff() {
+          const movieRef = doc(db, `${userCredential.user.uid}`, "shows");
+          const docSnap = await getDoc(movieRef);
+
+          if (docSnap.exists()) {
+            console.log("yes");
+          } else {
+            console.log("created");
+            await setDoc(doc(db, `${userCredential.user.uid}`, "shows"), {});
+            await setDoc(doc(db, `${userCredential.user.uid}`, "movies"), {});
+          }
+        }
+        getff();
+
+        setUserLogged(true);
         getUserInfo();
-        navigate('/')
+        navigate("/");
       })
       .catch((err) => {
-        if (err.code === 'auth/invalid-email') {
-          setErrorMessage('Непрвильная почта')
-        } else if (err.code === 'auth/missing-password') {
-          setErrorMessage('Пароль не написан')
-        } else if (err.code === 'auth/invalid-credential') {
-          setErrorMessage('Почта или пароль не правильный')
+        if (err.code === "auth/invalid-email") {
+          setErrorMessage("Неправильная почта");
+        } else if (err.code === "auth/missing-password") {
+          setErrorMessage("Пароль не написан");
+        } else if (err.code === "auth/invalid-credential") {
+          setErrorMessage("Почта или пароль не правильный");
         } else {
-          setErrorMessage(err.code)
+          setErrorMessage(err.code);
         }
       });
   };

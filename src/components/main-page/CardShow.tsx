@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 type CardProps = {
   item: ShowsPageProps;
 };
+
 function Card({ item }: CardProps) {
   const { deleteShow, requestTitle } = useContext(contextData);
 

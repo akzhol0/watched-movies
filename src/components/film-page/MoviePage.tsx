@@ -123,7 +123,7 @@ function MoviePage() {
                           {moviePageInfo.userRate === 0 ? (
                             <p>Did not rated yet</p>
                           ) : (
-                            moviePageInfo.userRate
+                            <p>{moviePageInfo.userRate + '/' + 10}</p>
                           )}
                         </span>
                       </div>
@@ -150,7 +150,7 @@ function MoviePage() {
                             <p>User rate: {userRate}</p>
                           </span>
                           <span onClick={() => updateRate()}>
-                            <MyButton className="bg-[#3758c5] hover:bg-[#2d438b]">
+                            <MyButton className="bg-[#3758c5] hover:bg-[#344c99]">
                               Submit
                             </MyButton>
                           </span>

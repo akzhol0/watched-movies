@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MySearchIcon from "../UI/MyIcons/MySearchIcon";
 import MyButton from "../UI/MyButtons/MyButton";
 import { useContext, useState } from "react";
@@ -12,6 +12,8 @@ type HeaderProps = {
 };
 
 function Header({ options }: HeaderProps) {
+  const navigate = useNavigate();
+  
   const {
     requestTitle,
     errorMessage,
@@ -19,6 +21,9 @@ function Header({ options }: HeaderProps) {
     userLogged,
     userInfo,
     setUserLogged,
+    getUserInfo,
+    setMovies,
+    setShows,
   } = useContext(contextData);
   const [modal, setModal] = useState<boolean>(false);
   const [searchBarInput, setSearchBarInput] = useState<string>("");
@@ -68,6 +73,10 @@ function Header({ options }: HeaderProps) {
                   onClick={() => {
                     setUserLogged(false);
                     localStorage.removeItem("user");
+                    getUserInfo();
+                    navigate('/login')
+                    setMovies([])
+                    setShows([])
                   }}
                 >
                   <MyButton>Exit</MyButton>

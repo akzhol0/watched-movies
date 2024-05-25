@@ -7,7 +7,7 @@ export type MoviesPageProps = {
   itemType: string;
   showType: string;
   id: number;
-  addedTime: number;
+  addedTime: string;
   imdbId: string;
   userRate: number;
   title: string;
@@ -33,11 +33,12 @@ export type MoviesPageProps = {
 };
 
 export type ShowsPageProps = {
+  date: string | number | Date;
   itemType: string;
   showType: string;
   id: number;
   userRate: number;
-  addedTime: number;
+  addedTime: string;
   imdbId: string;
   tmdbId: string;
   title: string;

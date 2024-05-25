@@ -1,12 +1,14 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { contextData } from "../context/logic";
 import Header from "../header/Header";
 import { MoviesPageProps, ShowsPageProps } from "../../service/types";
 import CardMovie from "./CardMovie";
 import CardShow from "./CardShow";
 import MyLoaderModal from "../UI/MyModals/MyLoaderModal";
+import { useNavigate } from "react-router-dom";
 
 function MainPage() {
+  const navigate = useNavigate()
   const {
     movies,
     shows,
@@ -15,7 +17,15 @@ function MainPage() {
     currentlyLoading,
     watchingMovies,
     setWatchingMovies,
+    userLogged,
   } = useContext(contextData);
+
+  useEffect(() => {
+    if (!userLogged) {
+      navigate('/login')
+      console.log('navigated login')
+    }
+  }, [])
 
   return (
     <>

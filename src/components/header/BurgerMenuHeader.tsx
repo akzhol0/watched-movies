@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import MySearchIcon from "../UI/MyIcons/MySearchIcon";
 import MyButton from "../UI/MyButtons/MyButton";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { contextData } from "../context/logic";
 
 type BurgerMenuHeaderProps = {
@@ -15,8 +15,17 @@ function BurgerMenuHeader({
   searchBarInput,
   setSearchBarInput,
 }: BurgerMenuHeaderProps) {
-  const { requestTitle, setSearchBar, userInfo, userLogged, setUserLogged } =
-    useContext(contextData);
+  const navigate = useNavigate();
+  const {
+    requestTitle,
+    setSearchBar,
+    userInfo,
+    userLogged,
+    setUserLogged,
+    getUserInfo,
+    setMovies,
+    setShows,
+  } = useContext(contextData);
   const [burgerToggle, setBurgerToggle] = useState<boolean>(false);
 
   return (
@@ -61,6 +70,10 @@ function BurgerMenuHeader({
                 onClick={() => {
                   localStorage.removeItem("user");
                   setUserLogged(false);
+                  getUserInfo();
+                  navigate("/login");
+                  setMovies([]);
+                  setShows([]);
                 }}
               >
                 <MyButton className="border text-[#bebebe] hover:text-black border-[#3758c5]">
