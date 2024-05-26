@@ -23,7 +23,7 @@ function MainPage() {
   useEffect(() => {
     if (!userLogged) {
       navigate('/login')
-      console.log('navigated login')
+      console.log('navigated to login')
     }
   }, [])
 

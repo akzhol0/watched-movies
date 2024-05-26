@@ -7,7 +7,8 @@ import db from "../../firebase/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 function ShowPage() {
-  const { setWatchingMovies, setErrorMessage, userInfo } = useContext(contextData);
+  const { setWatchingMovies, setErrorMessage, userInfo } =
+    useContext(contextData);
   const [userRate, setUserRate] = useState<number>(0);
   const [moviePageInfo, setMoviePageInfo] = useState<any>([]);
   const [loaded, setLoaded] = useState<boolean>(false);
@@ -15,7 +16,13 @@ function ShowPage() {
   const navigate = useNavigate();
 
   async function updateRate() {
-    const showRef = doc(db, `${userInfo.uid}`, "shows", "shows-subj", `show${id}`);
+    const showRef = doc(
+      db,
+      `${userInfo.uid}`,
+      "shows",
+      "shows-subj",
+      `show${id}`
+    );
 
     await updateDoc(showRef, {
       userRate: userRate,
@@ -23,7 +30,13 @@ function ShowPage() {
   }
 
   async function getMovieInfo() {
-    const docRef = doc(db, `${userInfo.uid}`, "shows", "shows-subj", `show${id}`)
+    const docRef = doc(
+      db,
+      `${userInfo.uid}`,
+      "shows",
+      "shows-subj",
+      `show${id}`
+    );
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
@@ -53,6 +66,7 @@ function ShowPage() {
                 navigate("/");
                 setWatchingMovies(false);
               }}
+              className="py-4"
             >
               <MyButton className="bg-white hover:bg-[#c4c4c4]">Back</MyButton>
             </span>
@@ -76,11 +90,7 @@ function ShowPage() {
                   <div className="flex flex-col gap-2">
                     <span>
                       <h1 className="text-2xl font-bold">
-                        {moviePageInfo.title} (
-                        {moviePageInfo.firstAirYear +
-                          "-" +
-                          moviePageInfo.lastAirYear}
-                        )
+                        {moviePageInfo.title} ({moviePageInfo.firstAirYear} - {moviePageInfo.lastAirYear})
                       </h1>
                       <h5 className="mt-2 text-[#d1d1d1]">
                         {moviePageInfo.originalTitle}
@@ -106,32 +116,34 @@ function ShowPage() {
                       </div>
                       <div className="max-w-[500px] flex gap-[40px]">
                         <p className="w-[120px]">Air time:</p>
-                        <p>
-                          {moviePageInfo.firstAirYear +
-                            " - " +
-                            moviePageInfo.lastAirYear}
-                        </p>
+                        <p>{moviePageInfo.firstAirYear} - {moviePageInfo.lastAirYear}</p>
                       </div>
                       <div className="max-w-[500px] flex gap-[40px]">
                         <p className="w-[120px]">Type:</p>
                         <p>{moviePageInfo.showType}</p>
                       </div>
                       <div className="max-w-[500px] flex gap-[40px]">
-                        <p className="w-[120px]">Rating imbd:</p>
-                        <span>
+                        <p className="w-[120px]">Rating imdb:</p>
+                        <p>
                           {[...String(moviePageInfo.rating)].join(".") +
                             "/" +
                             10}
-                        </span>
+                        </p>
                       </div>
                       <div className="max-w-[500px] flex gap-[40px]">
                         <p className="w-[120px]">Rating user:</p>
-                        <p>
+                        <span>
                           {moviePageInfo.userRate === 0 ? (
-                            <p>Did not rated yet!</p>
+                            <p>Did not rated yet</p>
                           ) : (
-                          <p>{moviePageInfo.userRate + '/' + 10}</p>
+                            <p>{moviePageInfo.userRate + '/' + 10}</p>
                           )}
+                        </span>
+                      </div>
+                      <div className="max-w-[500px] flex gap-[40px]">
+                        <p className="w-[120px]">Seasons:</p>
+                        <p>
+                          {moviePageInfo.seasonCount} seasons, {moviePageInfo.episodeCount} episodes
                         </p>
                       </div>
                       <div className="max-w-[500px] flex gap-[40px]">
@@ -142,7 +154,7 @@ function ShowPage() {
                           ))}
                         </span>
                       </div>
-                      <div className="w-[400px] py-4">
+                      <div className="max-w-[400px] py-4">
                         <input
                           className="w-full"
                           type="range"
@@ -157,7 +169,7 @@ function ShowPage() {
                             <p>User rate: {userRate}</p>
                           </span>
                           <span onClick={() => updateRate()}>
-                            <MyButton className="bg-[#3758c5] hover:bg-[#36509e]">
+                            <MyButton className="bg-[#3758c5] hover:scale-105">
                               Submit
                             </MyButton>
                           </span>

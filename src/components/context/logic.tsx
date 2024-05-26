@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import { MoviesPageProps, ShowsPageProps } from "../../service/types";
-import { collection, doc, deleteDoc, setDoc, getDocs, getDoc } from "firebase/firestore";
+import { collection, doc, deleteDoc, setDoc, getDocs } from "firebase/firestore";
 import db from "../../firebase/firebase";
 
 type ContextProps = {
@@ -27,6 +27,8 @@ type ContextProps = {
   setWatchingMovies: (arg0: boolean) => void;
   setMovies: (arg0: MoviesPageProps[]) => void;
   setShows: (arg0: ShowsPageProps[]) => void;
+  messagerLogin: boolean;
+  setMessagerLogin: (arg0: boolean) => void;
 };
 
 export const contextData = createContext({} as ContextProps);
@@ -43,6 +45,7 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
   const [requestTitle, setRequestTitle] = useState<string>("movie");
   const [searchBar, setSearchBar] = useState<string>("");
 
+  const [messagerLogin, setMessagerLogin] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<boolean>(false);
   const [filmLoaded, setFilmLoaded] = useState<boolean>(false);
   const [userLogged, setUserLogged] = useState<boolean>(false);
@@ -51,57 +54,47 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
   const [watchingMovies, setWatchingMovies] = useState<boolean>(true);
 
   useEffect(() => {
-    if (!fetched) {
-      getUserInfo();
-    }
+    if (!fetched) getUserInfo();
   }, []);
 
-  // get user info if registered from localStor
+  // get user info (if registered) from localStorage and posts from firebase
   const getUserInfo = () => {
     const user = localStorage.getItem("user");
     const userParsed = user ? JSON.parse(user) : null;
 
     if (userParsed !== null) {
-      async function getff() {
+      async function checkIfPostsExists() {
         setUserLogged(true);
-        const movieRef = doc(db, `${userParsed.uid}`, "shows");
-        const docSnap = await getDoc(movieRef);
-
-        if (docSnap.exists()) {
-          getAllFilms(userParsed);
-        } else {
-          console.log("doesnt exist");
-        }
+        getAllFilms(userParsed);
+        setUserInfo(userParsed);
       }
-      getff();
-
-      setUserLogged(true);
-      setUserInfo(userParsed);
+      checkIfPostsExists();
     } else {
-      console.log("user didnt logged");
+      setMessagerLogin(true);
     }
   };
 
   // get all films from firebase
-  async function getAllFilms(userParsed: any) {
+  async function getAllFilms(user: any) {
     const queryShows = await getDocs(
-      collection(db, `${userParsed.uid}`, "shows", "shows-subj")
+      collection(db, `${user.uid}`, "shows", "shows-subj")
     );
     queryShows.forEach((doc: any) => {
-      console.log("adding movies");
+      console.log("adding shows");
       setShows((prev) => [...prev, doc.data()]);
       setFetched(true);
     });
 
     const queryMovies = await getDocs(
-      collection(db, `${userParsed.uid}`, "movies", "movies-subj")
+      collection(db, `${user.uid}`, "movies", "movies-subj")
     );
     queryMovies.forEach((doc: any) => {
-      console.log("adding shows");
+      console.log("adding movies");
       setMovies((prev) => [...prev, doc.data()]);
-      setCurrentlyLoading(false);
       setFetched(true);
     });
+
+    setCurrentlyLoading(false);
   }
 
   // set movies
@@ -218,13 +211,11 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
       }
     } catch (error) {
       setErrorMessage(true);
-      console.error(error);
     }
   }
 
   // delete movie
   const deleteMovie = (id: number) => {
-    console.log(userInfo.uid);
     setMovies(movies.filter((item) => Number(item.id) !== Number(id)));
     deleteDoc(doc(db, `${userInfo.uid}`, "movies", "movies-subj", `movie${id}`));
   };
@@ -261,6 +252,8 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
         setWatchingMovies,
         setMovies,
         setShows,
+        messagerLogin,
+        setMessagerLogin,
       }}
     >
       {children}

@@ -29,25 +29,27 @@ function MyModal({ modal, setModal }: MyModalProps) {
       {modal && (
         <div className="w-full h-screen bg-black absolute bottom-0 opacity-90 flex justify-center z-50">
           <div className="mt-[100px]">
-            <div className="flex flex-col md:flex-row gap-3 items-center">
-              <span onClick={() => setModal(false)}>
-                <MyButton className="bg-white rounded-[12px] hover:text-white h-[45px]">
-                  <MyCloseButton />
-                </MyButton>
-              </span>
-              <input
-                className="w-[250px] md:w-[400px] h-[45px] rounded-md ps-3"
-                type="text"
-                placeholder={`Name of the ${requestTitle}`}
-                value={filmName}
-                onChange={(e) => setMovieName(e.target.value)}
-              />
-              <span onClick={() => checkingFunction()}>
-                <MyButton className="bg-white rounded-[15px] hover:text-white h-[45px]">
-                  ADD {requestTitle.toUpperCase()}
-                </MyButton>
-              </span>
-            </div>
+            <form action="">
+              <div className="flex flex-col md:flex-row gap-3 items-center">
+                <span onClick={() => setModal(false)}>
+                  <MyButton className="bg-white rounded-[12px] hover:text-white h-[45px]">
+                    <MyCloseButton />
+                  </MyButton>
+                </span>
+                <input
+                  className="w-[250px] md:w-[400px] h-[45px] rounded-md ps-3"
+                  type="text"
+                  placeholder={`Name of the ${requestTitle}`}
+                  value={filmName}
+                  onChange={(e) => setMovieName(e.target.value)}
+                />
+                <span onClick={() => checkingFunction()}>
+                  <MyButton className="bg-white rounded-[15px] hover:text-white h-[45px]">
+                    ADD {requestTitle.toUpperCase()}
+                  </MyButton>
+                </span>
+              </div>
+            </form>
             <p className="text-red-600 font-bold text-center mt-3">
               {errorMessage}
             </p>

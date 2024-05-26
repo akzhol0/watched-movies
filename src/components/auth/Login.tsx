@@ -8,9 +8,10 @@ import { auth } from "../../firebase/firebase";
 import db from "../../firebase/firebase";
 import { contextData } from "../context/logic";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import MyMessagerModal from "../UI/MyModals/MyMessagerModal";
 
 function Login() {
-  const { setUserLogged, getUserInfo, userLogged } = useContext(contextData);
+  const { setUserLogged, getUserInfo, userLogged, messagerLogin } = useContext(contextData);
   const [eye, setEye] = useState<boolean>(false);
   const [login, setLogin] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -20,7 +21,7 @@ function Login() {
   useEffect(() => {
     if (userLogged) {
       navigate('/')
-      console.log('navigated login')
+      console.log('navigated to main-page')
     }
   }, [])
 
@@ -31,19 +32,17 @@ function Login() {
         const userLS = JSON.stringify(user);
         localStorage.setItem("user", userLS);
 
-        async function getff() {
+        async function checkIfPostsExists() {
           const movieRef = doc(db, `${userCredential.user.uid}`, "shows");
           const docSnap = await getDoc(movieRef);
 
-          if (docSnap.exists()) {
-            console.log("yes");
-          } else {
+          if (!docSnap.exists()) {
             console.log("created");
             await setDoc(doc(db, `${userCredential.user.uid}`, "shows"), {});
             await setDoc(doc(db, `${userCredential.user.uid}`, "movies"), {});
           }
         }
-        getff();
+        checkIfPostsExists();
 
         setUserLogged(true);
         getUserInfo();
@@ -65,6 +64,7 @@ function Login() {
   return (
     <div>
       <Header options={false} />
+      {messagerLogin && <MyMessagerModal/>}
       <div className="w-full min-h-[800px] flex justify-center items-center">
         <section className="w-[350px] min-h-[400px] flex flex-col items-center bg-white rounded-lg">
           <h2 className="w-full text-center text-3xl font-Alumni border-b-2 border-black">

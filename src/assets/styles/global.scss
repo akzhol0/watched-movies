@@ -28,3 +28,17 @@ body {
     left: 20px;
   }
 }
+
+.animMessager {
+  animation: animMessager .5s;
+}
+
+@keyframes animMessager {
+  0% {
+    opacity: 0;
+    left: 45%;
+  } 100% {
+    opacity: 100;
+    left: 50%;
+  }
+}

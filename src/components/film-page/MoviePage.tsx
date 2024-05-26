@@ -150,7 +150,7 @@ function MoviePage() {
                             <p>User rate: {userRate}</p>
                           </span>
                           <span onClick={() => updateRate()}>
-                            <MyButton className="bg-[#3758c5] hover:bg-[#36509e]">
+                            <MyButton className="bg-[#3758c5] hover:scale-105">
                               Submit
                             </MyButton>
                           </span>
