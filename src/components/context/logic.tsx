@@ -80,7 +80,6 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
       collection(db, `${user.uid}`, "shows", "shows-subj")
     );
     queryShows.forEach((doc: any) => {
-      console.log("adding shows");
       setShows((prev) => [...prev, doc.data()]);
       setFetched(true);
     });
@@ -89,7 +88,6 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
       collection(db, `${user.uid}`, "movies", "movies-subj")
     );
     queryMovies.forEach((doc: any) => {
-      console.log("adding movies");
       setMovies((prev) => [...prev, doc.data()]);
       setFetched(true);
     });
