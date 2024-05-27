@@ -16,13 +16,7 @@ function ShowPage() {
   const navigate = useNavigate();
 
   async function updateRate() {
-    const showRef = doc(
-      db,
-      `${userInfo.uid}`,
-      "shows",
-      "shows-subj",
-      `show${id}`
-    );
+    const showRef = doc(db, `${userInfo.uid}`, "shows", "shows-subj", `show${id}`);
 
     await updateDoc(showRef, {
       userRate: userRate,
@@ -30,13 +24,7 @@ function ShowPage() {
   }
 
   async function getMovieInfo() {
-    const docRef = doc(
-      db,
-      `${userInfo.uid}`,
-      "shows",
-      "shows-subj",
-      `show${id}`
-    );
+    const docRef = doc(db, `${userInfo.uid}`, "shows", "shows-subj", `show${id}`);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {

@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
-import { MoviesProps, ShowsProps } from "../../service/types";
+import { MoviesProps, ShowsProps, foo } from "../../service/types";
 import { collection, doc, deleteDoc, setDoc, getDocs } from "firebase/firestore";
 import db from "../../firebase/firebase";
 
@@ -29,6 +29,7 @@ type ContextProps = {
   setShows: (arg0: ShowsProps[]) => void;
   messagerLogin: boolean;
   setMessagerLogin: (arg0: boolean) => void;
+  filteredBySearch: (arg0: string) => foo;
 };
 
 export const contextData = createContext({} as ContextProps);
@@ -56,6 +57,17 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
   useEffect(() => {
     if (!fetched) getUserInfo();
   }, []);
+
+  // filter
+  function filteredBySearch(target: string) {
+    let result;
+
+    target === "movies"
+      ? (result = movies?.filter((item) => item.title.toLowerCase().includes(searchBar)))
+      : (result = shows?.filter((item) => item.title.toLowerCase().includes(searchBar)));
+
+    return result;
+  }
 
   // get user info (if registered) from localStorage and posts from firebase
   const getUserInfo = () => {
@@ -212,7 +224,9 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
   // delete movie
   const deleteMovie = (id: number) => {
     setMovies(movies.filter((item) => Number(item.id) !== Number(id)));
-    deleteDoc(doc(db, `${userInfo.uid}`, "movies", "movies-subj", `movie${id}`));
+    deleteDoc(
+      doc(db, `${userInfo.uid}`, "movies", "movies-subj", `movie${id}`)
+    );
   };
 
   // delete show
@@ -249,6 +263,7 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
         setShows,
         messagerLogin,
         setMessagerLogin,
+        filteredBySearch,
       }}
     >
       {children}

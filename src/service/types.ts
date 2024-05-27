@@ -1,3 +1,8 @@
+export type foo = {
+  length: any;
+  map: any;
+};
+
 type genres = {
   name: string;
   id: string;
@@ -7,7 +12,7 @@ export type MoviesProps = {
   itemType: string;
   showType: string;
   id: number;
-  addedTime: string;
+  addedTime: number;
   imdbId: string;
   userRate: number;
   title: string;
@@ -33,12 +38,11 @@ export type MoviesProps = {
 };
 
 export type ShowsProps = {
-  date: string | number | Date;
   itemType: string;
   showType: string;
   id: number;
   userRate: number;
-  addedTime: string;
+  addedTime: number;
   imdbId: string;
   tmdbId: string;
   title: string;

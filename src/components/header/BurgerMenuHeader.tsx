@@ -5,13 +5,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { contextData } from "../context/logic";
 
 type BurgerMenuHeaderProps = {
-  setModal: (arg0: boolean) => void;
   searchBarInput: string;
   setSearchBarInput: (arg0: string) => void;
 };
 
 function BurgerMenuHeader({
-  setModal,
   searchBarInput,
   setSearchBarInput,
 }: BurgerMenuHeaderProps) {
@@ -58,11 +56,6 @@ function BurgerMenuHeader({
           </span>
         </div>
         <div className="flex flex-col justify-center items-center gap-2">
-          <span onClick={() => setModal(true)}>
-            <MyButton className="border text-[#bebebe] hover:text-black border-[#3758c5]">
-              ADD {requestTitle.toUpperCase()}
-            </MyButton>
-          </span>
           {userLogged ? (
             <>
               <p className="text-white">{userInfo?.email}</p>

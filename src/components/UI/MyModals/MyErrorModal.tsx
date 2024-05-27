@@ -9,7 +9,7 @@ function MyErrorModal() {
   }, 3000)
 
   return (
-    <div className="anim absolute top-[100px] left-[20px] rounded-[10px] bg-red-500">
+    <div className="anim absolute top-[150px] left-[20px] rounded-[10px] bg-red-500">
         <p className="px-4 py-1 text-white cursor-default">Happened error...</p>
     </div>
   )

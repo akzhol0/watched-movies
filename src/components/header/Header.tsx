@@ -2,7 +2,6 @@ import { Link, useNavigate } from "react-router-dom";
 import MySearchIcon from "../UI/MyIcons/MySearchIcon";
 import MyButton from "../UI/MyButtons/MyButton";
 import { useContext, useState } from "react";
-import MyModal from "../UI/MyModals/MyModal";
 import { contextData } from "../context/logic";
 import MyErrorModal from "../UI/MyModals/MyErrorModal";
 import BurgerMenuHeader from "./BurgerMenuHeader";
@@ -25,7 +24,6 @@ function Header({ options }: HeaderProps) {
     setMovies,
     setShows,
   } = useContext(contextData);
-  const [modal, setModal] = useState<boolean>(false);
   const [searchBarInput, setSearchBarInput] = useState<string>("");
 
   return (
@@ -35,7 +33,6 @@ function Header({ options }: HeaderProps) {
           <BurgerMenuHeader
             setSearchBarInput={setSearchBarInput}
             searchBarInput={searchBarInput}
-            setModal={setModal}
           />
         )}
         <div
@@ -65,9 +62,6 @@ function Header({ options }: HeaderProps) {
             </span>
           </div>
           <div className={options ? "hidden lg:flex items-center" : "hidden"}>
-            <span onClick={() => setModal(true)}>
-              <MyButton>ADD {requestTitle.toUpperCase()}</MyButton>
-            </span>
             {userLogged ? (
               <>
                 <p>{userInfo?.email}</p>
@@ -92,7 +86,6 @@ function Header({ options }: HeaderProps) {
           </div>
         </div>
       </div>
-      <MyModal modal={modal} setModal={setModal} />
       {errorMessage && <MyErrorModal />}
     </>
   );
