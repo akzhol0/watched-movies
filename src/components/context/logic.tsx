@@ -63,8 +63,8 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
     let result;
 
     target === "movies"
-      ? (result = movies?.filter((item) => item.title.toLowerCase().includes(searchBar)))
-      : (result = shows?.filter((item) => item.title.toLowerCase().includes(searchBar)));
+      ? (result = movies?.filter((item) => item.title.toLowerCase().includes(searchBar.toLowerCase()))
+      : (result = shows?.filter((item) => item.title.toLowerCase().includes(searchBar.toLowerCase()));
 
     return result;
   }
