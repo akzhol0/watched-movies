@@ -44,7 +44,7 @@ function Header({ options }: HeaderProps) {
         >
           <Link to="/">
             <h1 className="text-3xl font-extrabold">
-              KINO<span className="text-[#3758c5]">MORE</span>
+              KINO<span className="text-[#3758c5]">FEST</span>
             </h1>
           </Link>
           <div
