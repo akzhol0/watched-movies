@@ -85,7 +85,6 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
       collection(db, `${user.uid}`, "movies", "movies-subj")
     );
     queryMovies.forEach((doc: any) => {
-      console.log("adding movies");
       setMovies((prev) => [...prev, doc.data()]);
       setFetched(true);
     });
