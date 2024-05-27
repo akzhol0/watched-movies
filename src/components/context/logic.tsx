@@ -1,13 +1,13 @@
 import React, { createContext, useEffect, useState } from "react";
-import { MoviesPageProps, ShowsPageProps } from "../../service/types";
+import { MoviesProps, ShowsProps } from "../../service/types";
 import { collection, doc, deleteDoc, setDoc, getDocs } from "firebase/firestore";
 import db from "../../firebase/firebase";
 
 type ContextProps = {
   getInfo: (arg0: string | undefined, arg1: string) => void;
-  movies: MoviesPageProps[];
+  movies: MoviesProps[];
   deleteMovie: (arg0: number) => void;
-  shows: ShowsPageProps[];
+  shows: ShowsProps[];
   deleteShow: (arg0: number) => void;
   requestTitle: string;
   setRequestTitle: (arg0: string) => void;
@@ -25,8 +25,8 @@ type ContextProps = {
   getUserInfo: () => void;
   watchingMovies: boolean;
   setWatchingMovies: (arg0: boolean) => void;
-  setMovies: (arg0: MoviesPageProps[]) => void;
-  setShows: (arg0: ShowsPageProps[]) => void;
+  setMovies: (arg0: MoviesProps[]) => void;
+  setShows: (arg0: ShowsProps[]) => void;
   messagerLogin: boolean;
   setMessagerLogin: (arg0: boolean) => void;
 };
@@ -38,8 +38,8 @@ type ContextOverAllProps = {
 };
 
 export function ContextOverAll({ children }: ContextOverAllProps) {
-  const [movies, setMovies] = useState<MoviesPageProps[]>([]);
-  const [shows, setShows] = useState<ShowsPageProps[]>([]);
+  const [movies, setMovies] = useState<MoviesProps[]>([]);
+  const [shows, setShows] = useState<ShowsProps[]>([]);
   const [userInfo, setUserInfo] = useState<any>([]);
 
   const [requestTitle, setRequestTitle] = useState<string>("movie");
@@ -63,12 +63,9 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
     const userParsed = user ? JSON.parse(user) : null;
 
     if (userParsed !== null) {
-      async function checkIfPostsExists() {
-        setUserLogged(true);
-        getAllFilms(userParsed);
-        setUserInfo(userParsed);
-      }
-      checkIfPostsExists();
+      setUserLogged(true);
+      getAllFilms(userParsed);
+      setUserInfo(userParsed);
     } else {
       setMessagerLogin(true);
     }
@@ -80,7 +77,6 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
       collection(db, `${user.uid}`, "shows", "shows-subj")
     );
     queryShows.forEach((doc: any) => {
-      console.log("adding shows");
       setShows((prev) => [...prev, doc.data()]);
       setFetched(true);
     });

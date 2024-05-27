@@ -3,7 +3,7 @@ type genres = {
   id: string;
 };
 
-export type MoviesPageProps = {
+export type MoviesProps = {
   itemType: string;
   showType: string;
   id: number;
@@ -32,7 +32,7 @@ export type MoviesPageProps = {
   streamingOptions: any;
 };
 
-export type ShowsPageProps = {
+export type ShowsProps = {
   date: string | number | Date;
   itemType: string;
   showType: string;

@@ -1,11 +1,11 @@
 import { useContext } from "react";
-import { ShowsPageProps } from "../../service/types";
+import { ShowsProps } from "../../service/types";
 import MyButton from "../UI/MyButtons/MyButton";
 import { contextData } from "../context/logic";
 import { Link } from "react-router-dom";
 
 type CardProps = {
-  item: ShowsPageProps;
+  item: ShowsProps;
 };
 
 function Card({ item }: CardProps) {

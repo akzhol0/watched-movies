@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { contextData } from "../context/logic";
 import Header from "../header/Header";
-import { MoviesPageProps, ShowsPageProps } from "../../service/types";
+import { MoviesProps, ShowsPageProps } from "../../service/types";
 import CardMovie from "./CardMovie";
 import CardShow from "./CardShow";
 import MyLoaderModal from "../UI/MyModals/MyLoaderModal";
@@ -66,7 +66,7 @@ function MainPage() {
                   ?.filter((item) =>
                     item.title?.toLowerCase().includes(searchBar)
                   )
-                  ?.map((item: MoviesPageProps) => (
+                  ?.map((item: MoviesProps) => (
                     <CardMovie key={item.id} item={item} />
                   ))
               : shows
