@@ -23,6 +23,7 @@ function Header({ options }: HeaderProps) {
     getUserInfo,
     setMovies,
     setShows,
+    setCurrentlyLoading,
   } = useContext(contextData);
   const [searchBarInput, setSearchBarInput] = useState<string>("");
 
@@ -73,6 +74,7 @@ function Header({ options }: HeaderProps) {
                     navigate("/login");
                     setMovies([]);
                     setShows([]);
+                    setCurrentlyLoading(true);
                   }}
                 >
                   <MyButton>Exit</MyButton>
