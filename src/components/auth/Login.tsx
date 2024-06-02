@@ -1,17 +1,19 @@
 import { useContext, useEffect, useState } from "react";
 import Header from "../header/Header";
 import { Link, useNavigate } from "react-router-dom";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import MyButton from "../UI/MyButtons/MyButton";
 import "../../assets/styles/global.scss";
-import { auth } from "../../firebase/firebase";
+import { auth, provider } from "../../firebase/firebase";
 import db from "../../firebase/firebase";
 import { contextData } from "../context/logic";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import MyMessagerModal from "../UI/MyModals/MyMessagerModal";
+import MyGoogleIcon from "../UI/MyIcons/MyGoogleIcon";
 
 function Login() {
-  const { setUserLogged, getUserInfo, userLogged, messagerLogin } = useContext(contextData);
+  const { setUserLogged, getUserInfo, userLogged, messagerLogin } =
+    useContext(contextData);
   const [eye, setEye] = useState<boolean>(false);
   const [login, setLogin] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -20,28 +22,49 @@ function Login() {
 
   useEffect(() => {
     if (userLogged) {
-      navigate('/')
+      navigate("/");
     }
-  }, [])
+  }, []);
 
-  const handleSignIn = () => {
+  async function checkIfPostsExists(user: any) {
+    const movieRef = doc(db, `${user.user.uid}`, "shows");
+    const docSnap = await getDoc(movieRef);
+
+    if (!docSnap.exists()) {
+      console.log("created");
+      await setDoc(doc(db, `${user.user.uid}`, "shows"), {});
+      await setDoc(doc(db, `${user.user.uid}`, "movies"), {});
+    }
+  }
+
+  const signInWithGoogle = () => {
+    signInWithPopup(auth, provider)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        const userLS = JSON.stringify(user);
+        localStorage.setItem("user", userLS);
+
+        checkIfPostsExists(userCredential);
+
+        setUserLogged(true);
+        getUserInfo();
+        navigate("/");
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  const handleSignIn = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     signInWithEmailAndPassword(auth, login, password)
       .then((userCredential) => {
         const user = userCredential.user;
         const userLS = JSON.stringify(user);
         localStorage.setItem("user", userLS);
 
-        async function checkIfPostsExists() {
-          const movieRef = doc(db, `${userCredential.user.uid}`, "shows");
-          const docSnap = await getDoc(movieRef);
-
-          if (!docSnap.exists()) {
-            console.log("created");
-            await setDoc(doc(db, `${userCredential.user.uid}`, "shows"), {});
-            await setDoc(doc(db, `${userCredential.user.uid}`, "movies"), {});
-          }
-        }
-        checkIfPostsExists();
+        checkIfPostsExists(userCredential);
 
         setUserLogged(true);
         getUserInfo();
@@ -63,15 +86,18 @@ function Login() {
   return (
     <div>
       <Header options={false} />
-      {messagerLogin && <MyMessagerModal/>}
+      {messagerLogin && <MyMessagerModal />}
       <div className="w-full min-h-[800px] flex justify-center items-center">
         <section className="w-[350px] min-h-[400px] flex flex-col items-center bg-white rounded-lg">
           <h2 className="w-full text-center text-3xl font-Alumni border-b-2 border-black">
             Log In
           </h2>
-          <div className="flex flex-col gap-2 items-center mt-[50px]">
+          <form
+            onSubmit={handleSignIn}
+            className="flex flex-col gap-2 items-center mt-[50px]"
+          >
             <input
-              className="bg-[#aaaaaa] rounded w-[260px] h-[40px] ps-4 placeholder-black font-Alumni text-sm"
+              className="bg-[#aaaaaa] rounded w-[260px] h-[40px] ps-4 placeholder-black font-Alumni text-md"
               type="email"
               placeholder="Email"
               value={login}
@@ -79,7 +105,7 @@ function Login() {
             />
             <div className="relative">
               <input
-                className=" bg-[#aaaaaa] rounded w-[260px] h-[40px] ps-4 placeholder-black font-Alumni text-sm"
+                className=" bg-[#aaaaaa] rounded w-[260px] h-[40px] ps-4 placeholder-black font-Alumni text-md"
                 type={eye ? "text" : "password"}
                 placeholder="Password"
                 value={password}
@@ -95,17 +121,24 @@ function Login() {
             <Link to="/register">
               <small>Нет аккаунта? Регистрация</small>
             </Link>
-            <div className="w-full flex justify-center">
-              <span onClick={() => handleSignIn()}>
-                <MyButton className="border border-[#3758c5] hover:text-white">
-                  Войти
+            <div className="w-full flex flex-col gap-2 justify-center">
+              <MyButton
+                type="submit"
+                className="w-full py-1 border border-[#3758c5] hover:text-white"
+              >
+                Sign In
+              </MyButton>
+              <span onClick={() => signInWithGoogle()}>
+                <MyButton className="w-full flex justify-center gap-2 py-1 border border-[#3758c5] hover:text-white">
+                  <MyGoogleIcon />
+                  Sign In With Google
                 </MyButton>
               </span>
             </div>
             <strong className="text-red-500 font-semibold">
               {<p>{errorMessage}</p>}
             </strong>
-          </div>
+          </form>
         </section>
       </div>
     </div>

@@ -13,7 +13,9 @@ function MyModal({ modal, setModal }: MyModalProps) {
   const [filmName, setMovieName] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  function checkingFunction() {
+  function checkingFunction(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
     if (filmName.length < 3) {
       setErrorMessage("Too short request!");
       return;
@@ -30,7 +32,10 @@ function MyModal({ modal, setModal }: MyModalProps) {
         <div className="fixed w-full h-screen overflow-hidden bg-black bottom-0 opacity-90 flex justify-center z-50">
           <div className="mt-[100px]">
             <div className="flex">
-              <div className="flex flex-col md:flex-row gap-3 items-center">
+              <form
+                onSubmit={checkingFunction}
+                className="flex flex-col md:flex-row gap-3 items-center"
+              >
                 <span onClick={() => setModal(false)}>
                   <MyButton className="bg-white rounded-[12px] hover:text-white h-[45px]">
                     <MyCloseButton />
@@ -43,12 +48,13 @@ function MyModal({ modal, setModal }: MyModalProps) {
                   value={filmName}
                   onChange={(e) => setMovieName(e.target.value)}
                 />
-                <span onClick={() => checkingFunction()}>
-                  <MyButton className="bg-white rounded-[15px] hover:text-white h-[45px]">
-                    ADD {requestTitle.toUpperCase()}
-                  </MyButton>
-                </span>
-              </div>
+                <MyButton
+                  type="submit"
+                  className="bg-white rounded-[15px] hover:text-white h-[45px]"
+                >
+                  ADD {requestTitle.toUpperCase()}
+                </MyButton>
+              </form>
             </div>
             <p className="text-red-600 font-bold text-center mt-3">
               {errorMessage}

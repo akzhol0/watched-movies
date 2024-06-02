@@ -1,12 +1,17 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Header from "../header/Header";
 import { Link, useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import "../../assets/styles/global.scss";
 import MyButton from "../UI/MyButtons/MyButton";
-import { auth } from "../../firebase/firebase";
+import { auth, provider } from "../../firebase/firebase";
+import db from "../../firebase/firebase";
+import MyGoogleIcon from "../UI/MyIcons/MyGoogleIcon";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { contextData } from "../context/logic";
 
 function Register() {
+  const { setUserLogged, getUserInfo } = useContext(contextData)
   const [eye, setEye] = useState<boolean>(true);
   const [login, setLogin] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -14,7 +19,20 @@ function Register() {
   const [passwordSecond, setPasswordSecond] = useState<string>("");
   const navigate = useNavigate();
 
-  const check = () => {
+  async function checkIfPostsExists(user: any) {
+    const movieRef = doc(db, `${user.user.uid}`, "shows");
+    const docSnap = await getDoc(movieRef);
+
+    if (!docSnap.exists()) {
+      console.log("created");
+      await setDoc(doc(db, `${user.user.uid}`, "shows"), {});
+      await setDoc(doc(db, `${user.user.uid}`, "movies"), {});
+    }
+  }
+
+  const check = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     if (password !== passwordSecond) {
       setErrorMessage("Пароли не совпадают!");
     } else {
@@ -22,10 +40,34 @@ function Register() {
     }
   };
 
+  const signInWithGoogle = () => {
+    signInWithPopup(auth, provider)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        const userLS = JSON.stringify(user);
+        localStorage.setItem("user", userLS);
+
+        checkIfPostsExists(userCredential);
+
+        setUserLogged(true);
+        getUserInfo();
+        navigate("/");
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
   const handleSignUp = () => {
     createUserWithEmailAndPassword(auth, login, password)
-      .then(() => {
+      .then((userCredential) => {
         navigate("/login");
+
+        checkIfPostsExists(userCredential);
+
+        setUserLogged(true);
+        getUserInfo();
+        navigate("/");
       })
       .catch((err) => {
         if (err.code === "auth/invalid-email") {
@@ -50,7 +92,10 @@ function Register() {
           <h2 className="w-full text-center text-3xl font-Alumni border-b-2 border-black">
             Register
           </h2>
-          <div className="flex flex-col gap-2 items-center mt-[50px]">
+          <form
+            onSubmit={check}
+            className="flex flex-col gap-2 items-center mt-[50px]"
+          >
             <input
               className="bg-[#aaaaaa] rounded w-[260px] h-[40px] ps-4 placeholder-black font-Alumni text-md"
               type="email"
@@ -91,17 +136,24 @@ function Register() {
             <Link to="/login">
               <small>Есть аккаунт? Войти</small>
             </Link>
-            <div className="w-full flex justify-center">
-              <span onClick={() => check()}>
-                <MyButton className="border border-[#3758c5] hover:text-white">
-                  Регистрация
+            <div className="w-full flex flex-col gap-2 justify-center">
+              <MyButton
+                type="submit"
+                className="w-full border border-[#3758c5] hover:text-white"
+              >
+                Sign Up
+              </MyButton>
+              <span onClick={() => signInWithGoogle()}>
+                <MyButton className="w-full flex justify-center gap-2 py-1 border border-[#3758c5] hover:text-white">
+                  <MyGoogleIcon />
+                  Sign Up With Google
                 </MyButton>
               </span>
             </div>
             <strong className="text-red-500 font-semibold">
               {<p>{errorMessage}</p>}
             </strong>
-          </div>
+          </form>
         </section>
       </div>
     </div>

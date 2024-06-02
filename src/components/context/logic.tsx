@@ -1,6 +1,12 @@
 import React, { createContext, useEffect, useState } from "react";
 import { MoviesProps, ShowsProps, foo } from "../../service/types";
-import { collection, doc, deleteDoc, setDoc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  deleteDoc,
+  setDoc,
+  getDocs,
+} from "firebase/firestore";
 import db from "../../firebase/firebase";
 
 type ContextProps = {
@@ -89,6 +95,8 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
 
   // get all films from firebase
   async function getAllFilms(user: any) {
+    setCurrentlyLoading(true);
+
     const queryShows = await getDocs(
       collection(db, `${user.uid}`, "shows", "shows-subj")
     );
@@ -103,6 +111,7 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
     queryMovies.forEach((doc: any) => {
       setMovies((prev) => [...prev, doc.data()]);
       setFetched(true);
+      setCurrentlyLoading(false);
     });
 
     setCurrentlyLoading(false);
