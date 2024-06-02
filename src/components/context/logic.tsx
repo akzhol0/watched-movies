@@ -6,10 +6,10 @@ import db from "../../firebase/firebase";
 type ContextProps = {
   getInfo: (arg0: string | undefined, arg1: string) => void;
   movies: MoviesProps[];
-  deleteMovie: (arg0: number) => void;
   shows: ShowsProps[];
   deleteShow: (arg0: number) => void;
   requestTitle: string;
+  deleteMovie: (arg0: number) => void;
   setRequestTitle: (arg0: string) => void;
   errorMessage: boolean;
   setErrorMessage: (arg0: boolean) => void;
@@ -63,8 +63,12 @@ export function ContextOverAll({ children }: ContextOverAllProps) {
     let result;
 
     target === "movies"
-      ? (result = movies?.filter((item) => item.title.toLowerCase().includes(searchBar.toLowerCase())))
-      : (result = shows?.filter((item) => item.title.toLowerCase().includes(searchBar.toLowerCase())))
+      ? (result = movies?.filter((item) =>
+          item.title.toLowerCase().includes(searchBar.toLowerCase())
+        ))
+      : (result = shows?.filter((item) =>
+          item.title.toLowerCase().includes(searchBar.toLowerCase())
+        ));
 
     return result;
   }
