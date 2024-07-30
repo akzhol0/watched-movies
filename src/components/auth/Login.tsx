@@ -86,7 +86,6 @@ function Login() {
   return (
     <div>
       <Header options={false} />
-      {messagerLogin && <MyMessagerModal />}
       <div className="w-full min-h-[800px] flex justify-center items-center">
         <section className="w-[350px] min-h-[400px] flex flex-col items-center bg-white rounded-lg">
           <h2 className="w-full text-center text-3xl font-Alumni border-b-2 border-black">

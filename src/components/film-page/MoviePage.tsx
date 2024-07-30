@@ -120,11 +120,7 @@ function MoviePage() {
                       <div className="max-w-[500px] flex gap-[40px]">
                         <p className="w-[120px]">Rating user:</p>
                         <span>
-                          {moviePageInfo.userRate === 0 ? (
-                            <p>Did not rated yet</p>
-                          ) : (
-                            <p>{moviePageInfo.userRate + '/' + 10}</p>
-                          )}
+                          {userRate}/10
                         </span>
                       </div>
                       <div className="max-w-[500px] flex gap-[40px]">

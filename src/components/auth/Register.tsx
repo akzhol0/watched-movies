@@ -1,34 +1,19 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import Header from "../header/Header";
 import { Link, useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import "../../assets/styles/global.scss";
 import MyButton from "../UI/MyButtons/MyButton";
 import { auth, provider } from "../../firebase/firebase";
-import db from "../../firebase/firebase";
 import MyGoogleIcon from "../UI/MyIcons/MyGoogleIcon";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { contextData } from "../context/logic";
 
 function Register() {
-  const { setUserLogged, getUserInfo } = useContext(contextData)
   const [eye, setEye] = useState<boolean>(true);
   const [login, setLogin] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [passwordSecond, setPasswordSecond] = useState<string>("");
   const navigate = useNavigate();
-
-  async function checkIfPostsExists(user: any) {
-    const movieRef = doc(db, `${user.user.uid}`, "shows");
-    const docSnap = await getDoc(movieRef);
-
-    if (!docSnap.exists()) {
-      console.log("created");
-      await setDoc(doc(db, `${user.user.uid}`, "shows"), {});
-      await setDoc(doc(db, `${user.user.uid}`, "movies"), {});
-    }
-  }
 
   const check = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -42,16 +27,8 @@ function Register() {
 
   const signInWithGoogle = () => {
     signInWithPopup(auth, provider)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        const userLS = JSON.stringify(user);
-        localStorage.setItem("user", userLS);
-
-        checkIfPostsExists(userCredential);
-
-        setUserLogged(true);
-        getUserInfo();
-        navigate("/");
+      .then(() => {
+        navigate("/login");
       })
       .catch((err) => {
         console.error(err);
@@ -60,14 +37,8 @@ function Register() {
 
   const handleSignUp = () => {
     createUserWithEmailAndPassword(auth, login, password)
-      .then((userCredential) => {
+      .then(() => {
         navigate("/login");
-
-        checkIfPostsExists(userCredential);
-
-        setUserLogged(true);
-        getUserInfo();
-        navigate("/");
       })
       .catch((err) => {
         if (err.code === "auth/invalid-email") {

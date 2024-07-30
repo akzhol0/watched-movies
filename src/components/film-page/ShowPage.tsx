@@ -1,14 +1,13 @@
-import { useNavigate, useParams } from "react-router-dom";
-import MyButton from "../UI/MyButtons/MyButton";
-import Header from "../header/Header";
-import { contextData } from "../context/logic";
-import { useContext, useEffect, useState } from "react";
-import db from "../../firebase/firebase";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { useNavigate, useParams } from 'react-router-dom';
+import MyButton from '../UI/MyButtons/MyButton';
+import Header from '../header/Header';
+import { contextData } from '../context/logic';
+import { useContext, useEffect, useState } from 'react';
+import db from '../../firebase/firebase';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
 function ShowPage() {
-  const { setWatchingMovies, setErrorMessage, userInfo } =
-    useContext(contextData);
+  const { setWatchingMovies, setErrorMessage, userInfo } = useContext(contextData);
   const [userRate, setUserRate] = useState<number>(0);
   const [moviePageInfo, setMoviePageInfo] = useState<any>([]);
   const [loaded, setLoaded] = useState<boolean>(false);
@@ -16,7 +15,7 @@ function ShowPage() {
   const navigate = useNavigate();
 
   async function updateRate() {
-    const showRef = doc(db, `${userInfo.uid}`, "shows", "shows-subj", `show${id}`);
+    const showRef = doc(db, `${userInfo.uid}`, 'shows', 'shows-subj', `show${id}`);
 
     await updateDoc(showRef, {
       userRate: userRate,
@@ -24,7 +23,7 @@ function ShowPage() {
   }
 
   async function getMovieInfo() {
-    const docRef = doc(db, `${userInfo.uid}`, "shows", "shows-subj", `show${id}`);
+    const docRef = doc(db, `${userInfo.uid}`, 'shows', 'shows-subj', `show${id}`);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
@@ -51,11 +50,10 @@ function ShowPage() {
           <div className="py-4">
             <span
               onClick={() => {
-                navigate("/");
+                navigate('/');
                 setWatchingMovies(false);
               }}
-              className="py-4"
-            >
+              className="py-4">
               <MyButton className="bg-white hover:bg-[#c4c4c4]">Back</MyButton>
             </span>
           </div>
@@ -70,7 +68,7 @@ function ShowPage() {
                   />
                   <div className="px-2 cursor-default rounded-[6px] bg-blue-600 absolute top-3 left-3">
                     <span className="text-white">
-                      {[...String(moviePageInfo.rating)].join(".")}
+                      {[...String(moviePageInfo.rating)].join('.')}
                     </span>
                   </div>
                 </div>
@@ -78,11 +76,10 @@ function ShowPage() {
                   <div className="flex flex-col gap-2">
                     <span>
                       <h1 className="text-2xl font-bold">
-                        {moviePageInfo.title} ({moviePageInfo.firstAirYear} - {moviePageInfo.lastAirYear})
+                        {moviePageInfo.title} ({moviePageInfo.firstAirYear} -{' '}
+                        {moviePageInfo.lastAirYear})
                       </h1>
-                      <h5 className="mt-2 text-[#d1d1d1]">
-                        {moviePageInfo.originalTitle}
-                      </h5>
+                      <h5 className="mt-2 text-[#d1d1d1]">{moviePageInfo.originalTitle}</h5>
                     </span>
                     <h1 className="text-2xl mt-5">About film:</h1>
                     <div className="flex flex-col gap-1 text-[#d1d1d1]">
@@ -93,18 +90,18 @@ function ShowPage() {
                       <div className="max-w-[500px] flex gap-[40px]">
                         <p className="w-[120px]">Genres:</p>
                         <span className="max-w-[300px] flex flex-wrap">
-                          {moviePageInfo.genres.map(
-                            (item: { name: string; id: string }) => (
-                              <p className="flex flex-wrap" key={item.id}>
-                                {item.name},&nbsp;
-                              </p>
-                            )
-                          )}
+                          {moviePageInfo.genres.map((item: { name: string; id: string }) => (
+                            <p className="flex flex-wrap" key={item.id}>
+                              {item.name},&nbsp;
+                            </p>
+                          ))}
                         </span>
                       </div>
                       <div className="max-w-[500px] flex gap-[40px]">
                         <p className="w-[120px]">Air time:</p>
-                        <p>{moviePageInfo.firstAirYear} - {moviePageInfo.lastAirYear}</p>
+                        <p>
+                          {moviePageInfo.firstAirYear} - {moviePageInfo.lastAirYear}
+                        </p>
                       </div>
                       <div className="max-w-[500px] flex gap-[40px]">
                         <p className="w-[120px]">Type:</p>
@@ -112,20 +109,12 @@ function ShowPage() {
                       </div>
                       <div className="max-w-[500px] flex gap-[40px]">
                         <p className="w-[120px]">Rating imdb:</p>
-                        <p>
-                          {[...String(moviePageInfo.rating)].join(".") +
-                            "/" +
-                            10}
-                        </p>
+                        <p>{[...String(moviePageInfo.rating)].join('.') + '/' + 10}</p>
                       </div>
                       <div className="max-w-[500px] flex gap-[40px]">
                         <p className="w-[120px]">Rating user:</p>
                         <span>
-                          {moviePageInfo.userRate === 0 ? (
-                            <p>Did not rated yet</p>
-                          ) : (
-                            <p>{moviePageInfo.userRate + '/' + 10}</p>
-                          )}
+                          {userRate === 0 ? <p>Did not rated yet!</p> : <p>{userRate}/10</p>}
                         </span>
                       </div>
                       <div className="max-w-[500px] flex gap-[40px]">
@@ -157,9 +146,7 @@ function ShowPage() {
                             <p>User rate: {userRate}</p>
                           </span>
                           <span onClick={() => updateRate()}>
-                            <MyButton className="bg-[#3758c5] hover:scale-105">
-                              Submit
-                            </MyButton>
+                            <MyButton className="bg-[#3758c5] hover:scale-105">Submit</MyButton>
                           </span>
                         </span>
                       </div>
