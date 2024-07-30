@@ -8,11 +8,10 @@ import { auth, provider } from "../../firebase/firebase";
 import db from "../../firebase/firebase";
 import { contextData } from "../context/logic";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import MyMessagerModal from "../UI/MyModals/MyMessagerModal";
 import MyGoogleIcon from "../UI/MyIcons/MyGoogleIcon";
 
 function Login() {
-  const { setUserLogged, getUserInfo, userLogged, messagerLogin } =
+  const { setUserLogged, getUserInfo, userLogged } =
     useContext(contextData);
   const [eye, setEye] = useState<boolean>(false);
   const [login, setLogin] = useState<string>("");
